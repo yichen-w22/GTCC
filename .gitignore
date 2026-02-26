@@ -1,0 +1,19 @@
+# cache / data
+datareader_new/jyrd/pkl_data/
+**/pkl_data/
+*.pkl
+*.avro
+
+# python cache
+__pycache__/
+*.pyc
+
+# build artifacts
+dist/
+build/
+*.exe
+
+*.csv
+*.xlsx
+
+/plantops
