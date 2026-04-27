@@ -16,10 +16,10 @@ matplotlib.rcParams["axes.unicode_minus"] = False
 dt = 60.0       # s
 
 a_s = 0.8       # 蒸汽侧指数固定
-K_s = 2.1e4     # 蒸汽侧系数
+K_s = 2.0e4     # 蒸汽侧系数
 
 a_g = 0.7       # 烟气侧指数固定
-K_g = 3.8e4     # 烟气侧系数
+K_g = 3.7e4     # 烟气侧系数
 C_m = 0.3e8     # 金属热容
 T_m0 = 749.0    # 金属初始温度
 
@@ -190,14 +190,14 @@ def plot_results(pred_df: pd.DataFrame):
     fig, axes = plt.subplots(7, 1, figsize=(12, 36), sharex=True)
 
     axes[0].plot(pred_df["step"], pred_df["Ts_out_true"], label="蒸汽出口真实值")
-    axes[0].plot(pred_df["step"], pred_df["Ts_out_pred"]-13, label="蒸汽出口预测值")
+    axes[0].plot(pred_df["step"], pred_df["Ts_out_pred"], label="蒸汽出口预测值")
     axes[0].set_ylabel("温度")
     axes[0].set_title("蒸汽出口温度预测")
     axes[0].legend()
     axes[0].grid(True, alpha=0.3)
 
     axes[1].plot(pred_df["step"], pred_df["Tg_out_true"], label="烟气出口真实值")
-    axes[1].plot(pred_df["step"], pred_df["Tg_out_pred"]-10, label="烟气出口预测值")
+    axes[1].plot(pred_df["step"], pred_df["Tg_out_pred"], label="烟气出口预测值")
     axes[1].set_ylabel("温度")
     axes[1].set_title("烟气出口温度预测")
     axes[1].legend()

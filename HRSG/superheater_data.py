@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 import matplotlib
 from iapws import IAPWS97
+import CoolProp.CoolProp as CP
+
 
 matplotlib.rcParams['font.sans-serif'] = ['SimHei']  # 指定中文字体
 matplotlib.rcParams['axes.unicode_minus'] = False  # 正常显示负号
@@ -51,8 +53,8 @@ df["高压过热器1入口烟温"] = df[高压过热器1入口烟温].mean(axis=
 高压蒸发器入口烟温 = [f"#1炉高压蒸发器入口烟温{i}" for i in range(1,7)]
 df["高压过热器1出口烟温"] = df[高压蒸发器入口烟温].mean(axis=1) + 273.15
 
-rho_g = 1.30   # kg/Nm3
-df["烟气流量"] = df["#1炉烟囱出口烟气流量"] * rho_g / 3600
+df["烟气流量"] = df["Exhaust Mass Flow"]
+
 
 
 汽包压力 = [
@@ -63,31 +65,31 @@ df["烟气流量"] = df["#1炉烟囱出口烟气流量"] * rho_g / 3600
 ]
 df["汽包压力"] = df[汽包压力].mean(axis=1)
 
-def calc_sat_temp(p):
-    try:
-        return IAPWS97(P=p, x=1).T - 273.15   # 转为摄氏度
-    except:
-        return np.nan
+# def calc_sat_temp(p):
+#     try:
+#         return IAPWS97(P=p, x=1).T - 273.15   # 转为摄氏度
+#     except:
+#         return np.nan
 
-df["高压过热器1入口蒸汽温度"] = df["汽包压力"].apply(calc_sat_temp) + 273.15
+# df["高压过热器1入口蒸汽温度"] = df["汽包压力"].apply(calc_sat_temp) + 273.15
 
-df["高压过热器1出口蒸汽温度"] = df["#1炉高压过热汽减温器入口蒸汽温度"] + 273.15
+# df["高压过热器1出口蒸汽温度"] = df["#1炉高压过热汽减温器入口蒸汽温度"] + 273.15
 
-df["汽包压力"] = df["汽包压力"] * 1e6
+# df["汽包压力"] = df["汽包压力"] * 1e6
 
-df_h = df[[
-    "timestamp",
-    "烟气流量",
-    "高压过热器1入口烟温",
-    "高压过热器1出口烟温",
-    "高压给水流量",
-    "高压主蒸汽流量",
-    "汽包压力",
-    "高压过热器1入口蒸汽温度",
-    "高压过热器1出口蒸汽温度"
-]]
+# df_h = df[[
+#     "timestamp",
+#     "烟气流量",
+#     "高压过热器1入口烟温",
+#     "高压过热器1出口烟温",
+#     "高压给水流量",
+#     "高压主蒸汽流量",
+#     "汽包压力",
+#     "高压过热器1入口蒸汽温度",
+#     "高压过热器1出口蒸汽温度"
+# ]]
 
-df_h.to_csv(r"HRSG/jyrd高压余热锅炉过热器1.csv", index=False, encoding="utf-8-sig")
+# df_h.to_csv(r"HRSG/jyrd高压余热锅炉过热器1.csv", index=False, encoding="utf-8-sig")
 
 # # 标记每一行是否有NaN
 # mask = df_h.notna().all(axis=1)
@@ -114,9 +116,9 @@ df_h.to_csv(r"HRSG/jyrd高压余热锅炉过热器1.csv", index=False, encoding=
 #     encoding="utf-8-sig"
 # )
 
-# plt.plot(df["timestamp"], df["汽包压力"], linewidth=0.8, label="汽包出口蒸汽温度")
-# plt.legend()
-# plt.show()
+plt.plot(df["烟气流量"], linewidth=0.8, label="烟气流量")
+plt.legend()
+plt.show()
 
 # 高压蒸发器入口烟温 = [f"#1炉高压蒸发器入口烟温{i}" for i in range(1,7)]
 # df["高压蒸发器入口烟温"] = df[高压蒸发器入口烟温].mean(axis=1)

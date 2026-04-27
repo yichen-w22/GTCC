@@ -1,12 +1,10 @@
+import sys
+import importlib.util
+from pathlib import Path
 import pandas as pd
-
-data = pd.read_pickle(r"D:\清华\毕业设计\test\datareader_new\jqrd\outcome\jqrd燃机1_1min.pkl")
-
-df = data[["余热锅炉出口烟气流量", "1#燃气流量", "APPARENT POWER"]].copy()
+import matplotlib.pyplot as plt
 
 
 
-df.to_csv(r"D:\清华\毕业设计\test\temp\massflow.csv")
-
-
+df = pd.read_csv(r"C:\MyFolder\Projects\GTCC\Test\Energy_Utilization_Analysis\data_precessing\continuous_data_10min.csv")
 

@@ -3,15 +3,15 @@ import os
 import fastavro
 from pathlib import Path
 
-KEY = "jyrd"
-CODE = "JYRD_11HAG03CM001BT03XQ01"
+KEY = "jqrd"
+CODE = "JQRD_11HAJ80CT601XQ01"
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 RAW_DATA_PATH = {
     "test": Path(r"D:/avrodata"),
-    "jqrd": Path(r"E:\beijing_energy\jqrd\taosdump.3494408741406\data0"),
-    "jyrd": Path(r"F:/jyrd/taosdump.3514126612530\data0")
+    "jqrd": Path(r"C:\MyFolder\Projects\GTCC\Data\jqrd\part2\taosdump.3540568337482\data0-657F0827"),
+    "jyrd": Path(r"E:\jyrd\taosdump.3514126612530\data0")
 }
 
 
