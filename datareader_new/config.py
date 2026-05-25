@@ -26,6 +26,6 @@ PLANTS = ["test", "jqrd", "jyrd"]
 RAW_DATA_PATH = {
     "test": Path(r"D:/avrodata"),
     "jqrd": Path(r"C:\MyFolder\Projects\GTCC\Data\jqrd\part2\taosdump.3540568337482\data0-657F0827"),
-    "jyrd": Path(r"F:/jyrd/taosdump.3514126612530\data0")
+    "jyrd": Path(r"D:\beijing_energy\jyrd\taosdump.3514126612530\data0")
 }
 

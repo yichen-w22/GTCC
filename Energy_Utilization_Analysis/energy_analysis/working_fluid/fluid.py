@@ -1,6 +1,7 @@
 import sys
 from pathlib import Path
 from dataclasses import dataclass
+from functools import cached_property
 from typing import Optional
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -17,17 +18,17 @@ class FlowState:
     s: Optional[float] = None
     ref: Optional[object] = None
 
-    @property
+    @cached_property
     def energy_flow(self):
         if self.m_dot is None or self.h is None:
             return None
         return self.m_dot * self.h
 
-    @property
+    @cached_property
     def exergy(self):
         raise NotImplementedError
 
-    @property
+    @cached_property
     def exergy_flow(self):
         if self.m_dot is None or self.exergy is None:
             return None

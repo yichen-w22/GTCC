@@ -1,4 +1,5 @@
 import sys
+from functools import cached_property
 from pathlib import Path
 
 
@@ -13,69 +14,59 @@ from energy_analysis.working_fluid.gas import GasComposition, GasState, calc_fue
 
 
 @dataclass
-class ChamberResult:
-    state_3: GasState
-    released_heat: float
-    pressure_loss: float
-    fuel_lhv: float
-
-
-@dataclass
 class Chamber(EnergyConverter):
-    def state_3(
-        self,
-        total_pressure_recovery: float = 0.95,
-        combustion_efficiency: float = 0.99,
-        inlet_air: GasState | None = None,
-        inlet_fuel: GasState | None = None,
-        outlet_compositon: GasComposition | None = None,
-    ) -> GasState:
+    inlet_air: GasState | None = None
+    inlet_fuel: GasState | None = None
+    outlet_composition: GasComposition | None = None
+    total_pressure_recovery: float = 0.95
+    combustion_efficiency: float = 0.99
+    bleeding: GasState | None = None
 
-        inlet_air = inlet_air
-        inlet_fuel = inlet_fuel
+    @cached_property
+    def fuel_lhv(self) -> float:
+        return calc_fuel_lhv(self.inlet_fuel.composition)
 
-        m_air = inlet_air.m_dot
-        m_fuel = inlet_fuel.m_dot
+    @cached_property
+    def released_heat(self) -> float:
+        return self.combustion_efficiency * self.fuel_lhv * self.inlet_fuel.m_dot
+
+    @cached_property
+    def state_3(self) -> GasState: # 燃烧室出口状态
+        m_air = self.inlet_air.m_dot
+        m_fuel = self.inlet_fuel.m_dot
         m_out = m_air + m_fuel
-        fuel_lhv = calc_fuel_lhv(inlet_fuel.composition)
-        released_heat = combustion_efficiency * fuel_lhv * m_fuel
-        h_3 = (m_air * inlet_air.h + m_fuel * inlet_fuel.h + released_heat) / m_out
-        p_3 = inlet_air.P * total_pressure_recovery
+        h_3 = (m_air * self.inlet_air.h + m_fuel * self.inlet_fuel.h + self.released_heat) / m_out
+        p_3 = self.inlet_air.P * self.total_pressure_recovery
 
         state_3 = GasState.from_Ph(
             P=p_3,
             h=h_3,
             m_dot=m_out,
-            composition=outlet_compositon.normalized(),
+            composition=self.outlet_composition.normalized(),
             name=f"{self.name}_state_3",
-            ref=inlet_air.ref,
+            ref=self.inlet_air.ref,
         )
-        if self.outlets:
-            self.outlets[0] = state_3
-        else:
-            self.add_outlet(state_3)
         return state_3
 
-    def solve(
-        self,
-        inlet_air: GasState,
-        inlet_fuel: GasState,
-        outlet_compositon: GasComposition,
-        total_pressure_recovery: float = 0.95,
-        combustion_efficiency: float = 0.99,
-    ) -> ChamberResult:
-        state_3 = self.state_3(
-            total_pressure_recovery=total_pressure_recovery,
-            combustion_efficiency=combustion_efficiency,
-            inlet_air=inlet_air,
-            inlet_fuel=inlet_fuel,
-            outlet_compositon=outlet_compositon,
+    @cached_property
+    def state_3_c(self) -> GasState: # 等效冷却后的燃烧室出口/透平入口状态
+        m_air = self.inlet_air.m_dot
+        m_fuel = self.inlet_fuel.m_dot
+        m_bleeding = self.bleeding.m_dot
+        m_out_c = m_air + m_fuel + m_bleeding
+        h_3_c = (m_air * self.inlet_air.h + m_fuel * self.inlet_fuel.h + self.released_heat + m_bleeding * self.bleeding.h) / m_out_c
+        p_3_c = self.inlet_air.P * self.total_pressure_recovery
+
+        state_3_c = GasState.from_Ph(
+            P=p_3_c,
+            h=h_3_c,
+            m_dot=m_out_c,
+            composition=self.outlet_composition.normalized(),
+            name=f"{self.name}_state_3_c",
+            ref=self.inlet_air.ref,
         )
-        fuel_lhv = calc_fuel_lhv(inlet_fuel.composition)
-        released_heat = combustion_efficiency * fuel_lhv * inlet_fuel.m_dot
-        return ChamberResult(
-            state_3=state_3,
-            released_heat=released_heat,
-            pressure_loss=inlet_air.P - state_3.P,
-            fuel_lhv=fuel_lhv,
-        )
+        return state_3_c
+
+    @cached_property
+    def pressure_loss(self) -> float:
+        return self.inlet_air.P - self.state_3.P

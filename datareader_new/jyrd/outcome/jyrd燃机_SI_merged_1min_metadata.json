@@ -1,0 +1,576 @@
+[
+  {
+    "output_column": "Compressor Inlet Temperature [K]",
+    "kind": "average",
+    "source_columns": [
+      "Compressor Inlet Temperature",
+      "Compressor Inlet Temperature.1"
+    ],
+    "source_unit": "℉",
+    "target_unit": "K",
+    "parameter_rows": [
+      0,
+      44
+    ]
+  },
+  {
+    "output_column": "Compressor Inlet Pressure Transducers 96CS [Pa]",
+    "kind": "average",
+    "source_columns": [
+      "Compressor Inlet Pressure Transducers 96CS",
+      "Compressor Inlet Pressure Transducers 96CS.1"
+    ],
+    "source_unit": "mmH2O",
+    "target_unit": "Pa",
+    "parameter_rows": [
+      1,
+      45
+    ]
+  },
+  {
+    "output_column": "Compressor DXscharge Press Max Select [Pa]",
+    "kind": "average",
+    "source_columns": [
+      "Compressor DXscharge Press Max Select",
+      "Compressor DXscharge Press Max Select.1"
+    ],
+    "source_unit": "psi",
+    "target_unit": "Pa",
+    "parameter_rows": [
+      2,
+      46
+    ]
+  },
+  {
+    "output_column": "Compressor DXscharge Temperature [K]",
+    "kind": "average",
+    "source_columns": [
+      "Compressor DXscharge Temperature",
+      "Compressor DXscharge Temperature.1"
+    ],
+    "source_unit": "℉",
+    "target_unit": "K",
+    "parameter_rows": [
+      3,
+      47
+    ]
+  },
+  {
+    "output_column": "Gas Fuel Flow [kg/s]",
+    "kind": "average",
+    "source_columns": [
+      "Gas Fuel Flow",
+      "Gas Fuel Flow.1"
+    ],
+    "source_unit": "lb/s",
+    "target_unit": "kg/s",
+    "parameter_rows": [
+      4,
+      48
+    ]
+  },
+  {
+    "output_column": "IGV angle in deg [1]",
+    "kind": "average",
+    "source_columns": [
+      "IGV angle in deg",
+      "IGV angle in deg.1"
+    ],
+    "source_unit": "0",
+    "target_unit": "1",
+    "parameter_rows": [
+      5,
+      49
+    ]
+  },
+  {
+    "output_column": "Voted Speed Signal (TMR) [rad/s]",
+    "kind": "average",
+    "source_columns": [
+      "Voted Speed Signal (TMR)",
+      "Voted Speed Signal (TMR).1"
+    ],
+    "source_unit": "rpm",
+    "target_unit": "rad/s",
+    "parameter_rows": [
+      6,
+      50
+    ]
+  },
+  {
+    "output_column": "Fuel Gas Inlet Pressure [Pa]",
+    "kind": "average",
+    "source_columns": [
+      "Fuel Gas Inlet Pressure",
+      "Fuel Gas Inlet Pressure.1"
+    ],
+    "source_unit": "psi",
+    "target_unit": "Pa",
+    "parameter_rows": [
+      7,
+      51
+    ]
+  },
+  {
+    "output_column": "Fuel gas temperature [K]",
+    "kind": "average",
+    "source_columns": [
+      "Fuel gas temperature",
+      "Fuel gas temperature.1"
+    ],
+    "source_unit": "℉",
+    "target_unit": "K",
+    "parameter_rows": [
+      8,
+      52
+    ]
+  },
+  {
+    "output_column": "Exhaust Temp MeDXan Corrected By Average [K]",
+    "kind": "average",
+    "source_columns": [
+      "Exhaust Temp MeDXan Corrected By Average",
+      "Exhaust Temp MeDXan Corrected By Average.1"
+    ],
+    "source_unit": "℉",
+    "target_unit": "K",
+    "parameter_rows": [
+      9,
+      53
+    ]
+  },
+  {
+    "output_column": "Exhaust Duct Pressure Transmitter [Pa]",
+    "kind": "average",
+    "source_columns": [
+      "Exhaust Duct Pressure Transmitter",
+      "Exhaust Duct Pressure Transmitter.1"
+    ],
+    "source_unit": "mmH2O",
+    "target_unit": "Pa",
+    "parameter_rows": [
+      10,
+      54
+    ]
+  },
+  {
+    "output_column": "Exhaust Duct Pressure  [Pa]",
+    "kind": "average",
+    "source_columns": [
+      "Exhaust Duct Pressure ",
+      "Exhaust Duct Pressure .1"
+    ],
+    "source_unit": "mmH2O",
+    "target_unit": "Pa",
+    "parameter_rows": [
+      11,
+      55
+    ]
+  },
+  {
+    "output_column": "Turbine Exhaust Mass Flow [kg/s]",
+    "kind": "average",
+    "source_columns": [
+      "Turbine Exhaust Mass Flow",
+      "Turbine Exhaust Mass Flow.1"
+    ],
+    "source_unit": "lb/s",
+    "target_unit": "kg/s",
+    "parameter_rows": [
+      12,
+      56
+    ]
+  },
+  {
+    "output_column": "Compressor Pressure Ratio [1]",
+    "kind": "average",
+    "source_columns": [
+      "Compressor Pressure Ratio",
+      "Compressor Pressure Ratio.1"
+    ],
+    "source_unit": "ratio",
+    "target_unit": "1",
+    "parameter_rows": [
+      13,
+      57
+    ]
+  },
+  {
+    "output_column": "MeDXan Ambient Temperature [K]",
+    "kind": "average",
+    "source_columns": [
+      "MeDXan Ambient Temperature",
+      "MeDXan Ambient Temperature.1"
+    ],
+    "source_unit": "℉",
+    "target_unit": "K",
+    "parameter_rows": [
+      41,
+      59
+    ]
+  },
+  {
+    "output_column": "IBH Mass Flow Of Valve [kg/s]",
+    "kind": "average",
+    "source_columns": [
+      "IBH Mass Flow Of Valve",
+      "IBH Mass Flow Of Valve.1"
+    ],
+    "source_unit": "lb/s",
+    "target_unit": "kg/s",
+    "parameter_rows": [
+      42,
+      60
+    ]
+  },
+  {
+    "output_column": "IBH Vlv Mass Flow / Turbine Exhaust Flow [1]",
+    "kind": "average",
+    "source_columns": [
+      "IBH Vlv Mass Flow / Turbine Exhaust Flow",
+      "IBH Vlv Mass Flow / Turbine Exhaust Flow.1"
+    ],
+    "source_unit": "%",
+    "target_unit": "1",
+    "parameter_rows": [
+      43,
+      61
+    ]
+  },
+  {
+    "output_column": "Ambient Temperature Thermocouple #1  [K]",
+    "kind": "single",
+    "source_columns": [
+      "Ambient Temperature Thermocouple #1 "
+    ],
+    "source_unit": "℉",
+    "target_unit": "K",
+    "parameter_rows": [
+      14
+    ]
+  },
+  {
+    "output_column": "Ambient Temperature Thermocouple #2  [K]",
+    "kind": "single",
+    "source_columns": [
+      "Ambient Temperature Thermocouple #2 "
+    ],
+    "source_unit": "℉",
+    "target_unit": "K",
+    "parameter_rows": [
+      15
+    ]
+  },
+  {
+    "output_column": "Ambient Temperature Thermocouple #3 [K]",
+    "kind": "single",
+    "source_columns": [
+      "Ambient Temperature Thermocouple #3"
+    ],
+    "source_unit": "℉",
+    "target_unit": "K",
+    "parameter_rows": [
+      16
+    ]
+  },
+  {
+    "output_column": "Compressor Inlet Thermocouple 1A [K]",
+    "kind": "single",
+    "source_columns": [
+      "Compressor Inlet Thermocouple 1A"
+    ],
+    "source_unit": "℉",
+    "target_unit": "K",
+    "parameter_rows": [
+      17
+    ]
+  },
+  {
+    "output_column": "Compressor Inlet Thermocouple 1B [K]",
+    "kind": "single",
+    "source_columns": [
+      "Compressor Inlet Thermocouple 1B"
+    ],
+    "source_unit": "℉",
+    "target_unit": "K",
+    "parameter_rows": [
+      18
+    ]
+  },
+  {
+    "output_column": "Compressor Inlet Thermocouple 2A [K]",
+    "kind": "single",
+    "source_columns": [
+      "Compressor Inlet Thermocouple 2A"
+    ],
+    "source_unit": "℉",
+    "target_unit": "K",
+    "parameter_rows": [
+      19
+    ]
+  },
+  {
+    "output_column": "Compressor DXscharge Press Transd. 96CD-1 [Pa]",
+    "kind": "single",
+    "source_columns": [
+      "Compressor DXscharge Press Transd. 96CD-1"
+    ],
+    "source_unit": "psi",
+    "target_unit": "Pa",
+    "parameter_rows": [
+      20
+    ]
+  },
+  {
+    "output_column": "Compressor DXscharge Press Transd. 96CD-1B [Pa]",
+    "kind": "single",
+    "source_columns": [
+      "Compressor DXscharge Press Transd. 96CD-1B"
+    ],
+    "source_unit": "psi",
+    "target_unit": "Pa",
+    "parameter_rows": [
+      21
+    ]
+  },
+  {
+    "output_column": "Compressor DXscharge Press Transd. 96CD-1C [Pa]",
+    "kind": "single",
+    "source_columns": [
+      "Compressor DXscharge Press Transd. 96CD-1C"
+    ],
+    "source_unit": "psi",
+    "target_unit": "Pa",
+    "parameter_rows": [
+      22
+    ]
+  },
+  {
+    "output_column": "Compressor DXscharge Thermocouple #1 [K]",
+    "kind": "single",
+    "source_columns": [
+      "Compressor DXscharge Thermocouple #1"
+    ],
+    "source_unit": "℉",
+    "target_unit": "K",
+    "parameter_rows": [
+      23
+    ]
+  },
+  {
+    "output_column": "Compressor DXscharge Thermocouple #2 [K]",
+    "kind": "single",
+    "source_columns": [
+      "Compressor DXscharge Thermocouple #2"
+    ],
+    "source_unit": "℉",
+    "target_unit": "K",
+    "parameter_rows": [
+      24
+    ]
+  },
+  {
+    "output_column": "Compressor DXscharge Thermocouple #3 [K]",
+    "kind": "single",
+    "source_columns": [
+      "Compressor DXscharge Thermocouple #3"
+    ],
+    "source_unit": "℉",
+    "target_unit": "K",
+    "parameter_rows": [
+      25
+    ]
+  },
+  {
+    "output_column": "Exhaust Mass Flow [kg/s]",
+    "kind": "single",
+    "source_columns": [
+      "Exhaust Mass Flow"
+    ],
+    "source_unit": "kg/s",
+    "target_unit": "kg/s",
+    "parameter_rows": [
+      26
+    ]
+  },
+  {
+    "output_column": "Turbine HP shaft speed in % [1]",
+    "kind": "single",
+    "source_columns": [
+      "Turbine HP shaft speed in %"
+    ],
+    "source_unit": "%",
+    "target_unit": "1",
+    "parameter_rows": [
+      27
+    ]
+  },
+  {
+    "output_column": "Interstage fuel gas press [Pa]",
+    "kind": "single",
+    "source_columns": [
+      "Interstage fuel gas press"
+    ],
+    "source_unit": "psi",
+    "target_unit": "Pa",
+    "parameter_rows": [
+      28
+    ]
+  },
+  {
+    "output_column": "Interstage fuel gas press xmitter 96FG-2A [Pa]",
+    "kind": "single",
+    "source_columns": [
+      "Interstage fuel gas press xmitter 96FG-2A"
+    ],
+    "source_unit": "psi",
+    "target_unit": "Pa",
+    "parameter_rows": [
+      29
+    ]
+  },
+  {
+    "output_column": "Interstage fuel gas press xmitter 96FG-2B [Pa]",
+    "kind": "single",
+    "source_columns": [
+      "Interstage fuel gas press xmitter 96FG-2B"
+    ],
+    "source_unit": "psi",
+    "target_unit": "Pa",
+    "parameter_rows": [
+      30
+    ]
+  },
+  {
+    "output_column": "Interstage fuel gas press xmitter 96FG-2C [Pa]",
+    "kind": "single",
+    "source_columns": [
+      "Interstage fuel gas press xmitter 96FG-2C"
+    ],
+    "source_unit": "psi",
+    "target_unit": "Pa",
+    "parameter_rows": [
+      31
+    ]
+  },
+  {
+    "output_column": "Fuel Gas Inlet Pressure Transducer (96FG-1A) [Pa]",
+    "kind": "single",
+    "source_columns": [
+      "Fuel Gas Inlet Pressure Transducer (96FG-1A)"
+    ],
+    "source_unit": "psi",
+    "target_unit": "Pa",
+    "parameter_rows": [
+      32
+    ]
+  },
+  {
+    "output_column": "Fuel Gas Inlet Pressure Transducer (96FG-1B) [Pa]",
+    "kind": "single",
+    "source_columns": [
+      "Fuel Gas Inlet Pressure Transducer (96FG-1B)"
+    ],
+    "source_unit": "psi",
+    "target_unit": "Pa",
+    "parameter_rows": [
+      33
+    ]
+  },
+  {
+    "output_column": "Fuel Gas Inlet Pressure Transducer (96FG-1C) [Pa]",
+    "kind": "single",
+    "source_columns": [
+      "Fuel Gas Inlet Pressure Transducer (96FG-1C)"
+    ],
+    "source_unit": "psi",
+    "target_unit": "Pa",
+    "parameter_rows": [
+      34
+    ]
+  },
+  {
+    "output_column": "Fuel gas temperature thermocouple [K]",
+    "kind": "single",
+    "source_columns": [
+      "Fuel gas temperature thermocouple"
+    ],
+    "source_unit": "℉",
+    "target_unit": "K",
+    "parameter_rows": [
+      35
+    ]
+  },
+  {
+    "output_column": "Fuel gas temperature thermocouple.1 [K]",
+    "kind": "single",
+    "source_columns": [
+      "Fuel gas temperature thermocouple.1"
+    ],
+    "source_unit": "℉",
+    "target_unit": "K",
+    "parameter_rows": [
+      36
+    ]
+  },
+  {
+    "output_column": "Fuel gas temperature thermocouple.2 [K]",
+    "kind": "single",
+    "source_columns": [
+      "Fuel gas temperature thermocouple.2"
+    ],
+    "source_unit": "℉",
+    "target_unit": "K",
+    "parameter_rows": [
+      37
+    ]
+  },
+  {
+    "output_column": "Generator Watts Max Selected [W]",
+    "kind": "single",
+    "source_columns": [
+      "Generator Watts Max Selected"
+    ],
+    "source_unit": "MW",
+    "target_unit": "W",
+    "parameter_rows": [
+      38
+    ]
+  },
+  {
+    "output_column": "Generator Watts 96GG-1 Transducer [W]",
+    "kind": "single",
+    "source_columns": [
+      "Generator Watts 96GG-1 Transducer"
+    ],
+    "source_unit": "MW",
+    "target_unit": "W",
+    "parameter_rows": [
+      39
+    ]
+  },
+  {
+    "output_column": "Generator Watts 96GW-1 Transducer [W]",
+    "kind": "single",
+    "source_columns": [
+      "Generator Watts 96GW-1 Transducer"
+    ],
+    "source_unit": "MW",
+    "target_unit": "W",
+    "parameter_rows": [
+      40
+    ]
+  },
+  {
+    "output_column": "Inlet Relative HumiDXty [1]",
+    "kind": "single",
+    "source_columns": [
+      "Inlet Relative HumiDXty"
+    ],
+    "source_unit": "%",
+    "target_unit": "1",
+    "parameter_rows": [
+      58
+    ]
+  }
+]

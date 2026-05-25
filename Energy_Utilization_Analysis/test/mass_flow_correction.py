@@ -33,15 +33,41 @@ def plot_linear_fit(ax, x, y, label):
     ax.legend()
 
     print(f"{label} fitting line: y = {k:.10g}x + {b:.10g}")
+    return k, b
 
+
+def plot_reference_fit(ax, x, y, label):
+    data = pd.DataFrame({"x": x, "y": y}).dropna().sort_values("x")
+    k, b = np.polyfit(data["x"], data["y"], 1)
+
+    ax.scatter(data["x"], data["y"], label=label, color="black", marker="x", s=100, zorder=3)
+    ax.plot(
+        data["x"],
+        k * data["x"] + b,
+        color="black",
+        linestyle="--",
+        linewidth=2,
+        label=f"{label} fit: y = {k:.6g}x + {b:.6g}",
+        zorder=2,
+    )
+    ax.legend()
+
+    print(f"{label} fitting line: y = {k:.10g}x + {b:.10g}")
+    return k, b
 
 plt.figure(figsize=(18, 9))
 
 ax1 = plt.subplot(1, 2, 1)
 plot_linear_fit(ax1, df[POWER_COL_1], df[FUEL_MASS_FLOW_COL_1], "GT_1")
+x = [277.5e6, 218e6, 195e6, 172e6, 278.25e6, 241.17e6]
+y = [16.18010094, 13.14728693, 12.13889537, 11.19161845, 16.09606831, 14.254989779999999]
+plot_reference_fit(ax1, x, y, "real data")
 
 ax2 = plt.subplot(1, 2, 2)
 plot_linear_fit(ax2, df[POWER_COL_2], df[FUEL_MASS_FLOW_COL_2], "GT_2")
+x = [278.30e6, 218.82e6, 195.41e6, 173.20e6, 275.1e6, 242.69e6]
+y = [16.01203568, 12.994500330000001, 11.9937481, 11.18397912, 16.042593, 14.39249772]
+plot_reference_fit(ax2, x, y, "real data")
 
 plt.tight_layout()
 plt.show()

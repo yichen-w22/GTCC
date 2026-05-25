@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import sys
+import math
 from dataclasses import dataclass, field
+from functools import cached_property
 from pathlib import Path
 from typing import Dict, Optional
 
@@ -14,6 +16,38 @@ if str(PROJECT_ROOT) not in sys.path:
 from energy_analysis.working_fluid.fluid import FlowState
 
 R_UNIVERSAL = 8.314462618
+T_REF = 298.15
+P_REF = 101325.0
+P_SHOMATE_REF = 100000.0
+MIN_GAS_PROPERTY_T = 200.0
+
+# Shomate coefficients for ideal-gas water vapor, valid for the gas phase over
+# the temperature range used by the GT/HRSG gas calculations.
+H2O_SHOMATE_LOW = {
+    "T_min": 298.0,
+    "T_max": 1700.0,
+    "A": 30.09200,
+    "B": 6.832514,
+    "C": 6.793435,
+    "D": -2.534480,
+    "E": 0.082139,
+    "F": -250.8810,
+    "G": 223.3967,
+    "H": -241.8264,
+}
+
+H2O_SHOMATE_HIGH = {
+    "T_min": 1700.0,
+    "T_max": 6000.0,
+    "A": 41.96426,
+    "B": 8.622053,
+    "C": -1.499780,
+    "D": 0.098119,
+    "E": -11.15764,
+    "F": -272.1797,
+    "G": 219.7809,
+    "H": -241.8264,
+}
 
 SPECIES = [
     "H2", "N2", "CO2", "CH4", "CO", "O2", "H2O",
@@ -148,6 +182,12 @@ def build_flue_gas_composition(
     m_dot_fuel: float,
     m_dot_air: float,
 ) -> GasComposition:
+    m_dot_fuel = max(float(m_dot_fuel), 0.0)
+    m_dot_air = max(float(m_dot_air), 0.0)
+
+    if m_dot_fuel == 0.0 and m_dot_air == 0.0:
+        return air_composition.normalized()
+
     fuel_comp = fuel_composition.normalized()
     air_comp = air_composition.normalized()
 
@@ -168,10 +208,16 @@ def build_flue_gas_composition(
     o2_need = n_fuel * sum(fuel[sp] * v for sp, v in O2_REQUIRED.items())
     flue["O2"] = max(o2_in - o2_need, 0.0)
 
+    if sum(flue.values()) <= 0.0:
+        return air_composition.normalized()
+
     return GasComposition.from_dict(flue).normalized()
 
 
 def _pure_gas_molar_h_s_cp(species: str, T: float, P: float):
+    if species == "H2O":
+        return _water_vapor_molar_h_s_cp(T, P)
+
     fluid = SPECIES_TO_COOLPROP[species]
     return (
         CP.PropsSI("HMOLAR", "T", T, "P", P, fluid),
@@ -180,22 +226,56 @@ def _pure_gas_molar_h_s_cp(species: str, T: float, P: float):
     )
 
 
+def _water_vapor_molar_h_s_cp(T: float, P: float):
+    coeff = H2O_SHOMATE_LOW if T < H2O_SHOMATE_HIGH["T_min"] else H2O_SHOMATE_HIGH
+    return _shomate_molar_h_s_cp(T, P, coeff)
+
+
+def _shomate_molar_h_s_cp(T: float, P: float, coeff: dict):
+    t = T / 1000.0
+
+    A = coeff["A"]
+    B = coeff["B"]
+    C = coeff["C"]
+    D = coeff["D"]
+    E = coeff["E"]
+    F = coeff["F"]
+    G = coeff["G"]
+    H = coeff["H"]
+
+    cp = A + B * t + C * t**2 + D * t**3 + E / t**2
+    h = A * t + B * t**2 / 2.0 + C * t**3 / 3.0 + D * t**4 / 4.0 - E / t + F - H
+    s = A * math.log(t) + B * t + C * t**2 / 2.0 + D * t**3 / 3.0 - E / (2.0 * t**2) + G
+    s -= R_UNIVERSAL * math.log(P / P_SHOMATE_REF)
+
+    return h * 1000.0, s, cp
+
+
 def mixture_h_s_cp(T: float, P: float, composition):
     composition = composition.normalized()
     hmolar = smolar = cpmolar = 0.0
+    hmolar_ref = smolar_ref = 0.0
 
     for species, x in composition.as_dict().items():
         if x <= 0.0:
             continue
         p_i = x * P
+        p_i_ref = x * P_REF
         h_i, s_i, cp_i = _pure_gas_molar_h_s_cp(species, T, p_i)
+        h_i_ref, s_i_ref, _ = _pure_gas_molar_h_s_cp(species, T_REF, p_i_ref)
 
         hmolar += x * h_i
         smolar += x * s_i
         cpmolar += x * cp_i
+        hmolar_ref += x * h_i_ref
+        smolar_ref += x * s_i_ref
 
     m_mix = composition.molar_mass()
-    return hmolar / m_mix, smolar / m_mix, cpmolar / m_mix
+    return (
+        (hmolar - hmolar_ref) / m_mix,
+        (smolar - smolar_ref) / m_mix,
+        cpmolar / m_mix,
+    )
 
 
 def calc_fuel_lhv(composition) -> float:
@@ -223,6 +303,7 @@ def solve_temperature_from_property(
 ) -> float:
 
     composition = composition.normalized()
+    T_low = max(T_low, MIN_GAS_PROPERTY_T)
     prop_index = 0 if property_name == "h" else 1
 
     def calc_property(T: float) -> float:
@@ -231,8 +312,8 @@ def solve_temperature_from_property(
     value_low = calc_property(T_low)
     value_high = calc_property(T_high)
 
-    while target_value < value_low and T_low > 200.0:
-        T_low = max(200.0, T_low - 20.0)
+    while target_value < value_low and T_low > MIN_GAS_PROPERTY_T:
+        T_low = max(MIN_GAS_PROPERTY_T, T_low - 20.0)
         value_low = calc_property(T_low)
 
     while target_value > value_high:
@@ -295,9 +376,14 @@ class GasState(FlowState):
         T = solve_temperature_from_property(P, s, composition, "s")
         return cls.from_TP(T, P, m_dot=m_dot, composition=composition, name=name, ref=ref)
 
-    @property
+    @cached_property
     def exergy(self):
-        ref = self.from_TP(self.ref.T0, self.ref.P0, composition=self.composition, ref=self.ref)
+        if self.ref is None:
+            ref_env = GasReferenceEnv(T0=T_REF, P0=P_REF)
+        else:
+            ref_env = self.ref
+
+        ref = self.from_TP(ref_env.T0, ref_env.P0, composition=self.composition, ref=ref_env)
         ref_h = ref.h
         ref_s = ref.s
-        return (self.h - ref_h) - self.ref.T0 * (self.s - ref_s)
+        return (self.h - ref_h) - ref_env.T0 * (self.s - ref_s)

@@ -1,0 +1,280 @@
+\chapter{汽轮机和余热锅炉的建模分析方法}
+
+\section{汽水侧系统建模对象与总体思路}
+
+在燃气--蒸汽联合循环机组中，余热锅炉和汽轮机共同构成蒸汽侧循环。燃气轮机排出的高温烟气进入余热锅炉后，将热量传递给高压、中压和低压汽水系统，产生主蒸汽、再热蒸汽和低压蒸汽；蒸汽进入汽轮机各级缸膨胀做功，随后在凝汽器中凝结，并经凝结水泵、给水泵重新送入余热锅炉。本文在第 2 章所建立的统一流股对象基础上，将汽水侧设备划分为余热锅炉、汽轮机、凝汽器、泵、节流阀和混合器等模块，并通过各模块入口、出口流股的质量流量、焓流率和火用流率计算设备性能指标。
+
+\begin{figure}[htbp]
+  \centering
+  \fbox{%
+    \parbox[c][0.32\textheight][c]{0.82\textwidth}{%
+      \centering
+      汽水侧设备及流股连接关系示意图预留位置\\[0.6em]
+      图中建议绘制两台余热锅炉、高压缸、中压缸、低压缸、凝汽器、
+      凝结水泵和给水泵，并标注高压主蒸汽、热再热蒸汽、低压主蒸汽、
+      冷再热蒸汽和烟气侧进出口边界。
+    }%
+  }
+  \caption{汽水侧设备及流股连接关系}
+  \label{fig:steam-water-system-boundary}
+\end{figure}
+
+\section{余热锅炉的建模方法}
+
+余热锅炉是连接燃气轮机排气和蒸汽循环的换热设备。由于测点数量的限制，本文并不逐段建立省煤器、蒸发器、过热器和再热器的详细传热模型，而是从整台余热锅炉的能量输入和输出角度计算其换热性能。对于第 $j$ 台余热锅炉，烟气入口状态记为 $g,\mathrm{in}$，烟气出口状态记为 $g,\mathrm{out}$；汽水侧入口流股集合记为 $\mathcal{W}_{j,\mathrm{in}}$，汽水侧出口流股集合记为 $\mathcal{W}_{j,\mathrm{out}}$。
+
+烟气侧放热功率由入口烟气焓流率与出口烟气焓流率之差表示：
+\[
+\dot{Q}_{g,j}
+=
+\dot{m}_{g,\mathrm{in}}h_{g,\mathrm{in}}
+-
+\dot{m}_{g,\mathrm{out}}h_{g,\mathrm{out}}.
+\]
+汽水侧吸热功率为所有汽水出口焓流率与入口焓流率之差：
+\[
+\dot{Q}_{w,j}
+=
+\sum_{o\in\mathcal{W}_{j,\mathrm{out}}}\dot{m}_o h_o
+-
+\sum_{i\in\mathcal{W}_{j,\mathrm{in}}}\dot{m}_i h_i.
+\]
+余热锅炉能量损失可表示为
+\[
+\dot{Q}_{\mathrm{loss},j}
+=
+\dot{Q}_{g,j}
+-
+\dot{Q}_{w,j}.
+\]
+余热锅炉换热效率采用汽水侧吸热功率与烟气侧放热功率之比表示：
+\[
+\eta_{\mathrm{HRSG},j}
+=
+\frac{\dot{Q}_{w,j}}{\dot{Q}_{g,j}}.
+\]
+同时，为描述烟气在余热锅炉内释放能量占入口烟气总能量的比例，定义换热器有效性为
+\[
+\varepsilon_{\mathrm{HRSG},j}
+=
+\frac{\dot{Q}_{g,j}}{\dot{m}_{g,\mathrm{in}}h_{g,\mathrm{in}}}.
+\]
+
+在火用分析中，烟气侧释放火用为
+\[
+\dot{E}_{x,g,j}
+=
+\dot{m}_{g,\mathrm{in}}e_{x,g,\mathrm{in}}
+-
+\dot{m}_{g,\mathrm{out}}e_{x,g,\mathrm{out}},
+\]
+汽水侧吸收火用为
+\[
+\dot{E}_{x,w,j}
+=
+\sum_{o\in\mathcal{W}_{j,\mathrm{out}}}\dot{m}_o e_{x,o}
+-
+\sum_{i\in\mathcal{W}_{j,\mathrm{in}}}\dot{m}_i e_{x,i}.
+\]
+余热锅炉火用效率定义为汽水侧吸收火用与烟气侧释放火用之比：
+\[
+\eta_{\mathrm{HRSG},ex,j}
+=
+\frac{\dot{E}_{x,w,j}}{\dot{E}_{x,g,j}}.
+\]
+该指标反映烟气高温可用能转化为蒸汽可用能的有效程度。若烟气侧放热功率较高而汽水侧火用增量较低，则说明换热过程中存在较大的传热温差损失或排烟火用损失。
+
+为进一步分析不同压力等级蒸汽的吸热贡献，程序还单独计算高压主蒸汽吸热功率、中压和再热蒸汽吸热功率以及低压主蒸汽吸热功率。高压主蒸汽吸热功率可表示为
+\[
+\dot{Q}_{\mathrm{HP},j}
+=
+\dot{H}_{\mathrm{HP,main},j}
+-
+\dot{H}_{\mathrm{HP,fw},j},
+\]
+中压和再热蒸汽吸热功率可表示为
+\[
+\dot{Q}_{\mathrm{IP+RH},j}
+=
+\dot{H}_{\mathrm{HRH},j}
+-
+\dot{H}_{\mathrm{IP,fw},j}
+-
+\dot{H}_{\mathrm{CRH},j},
+\]
+低压主蒸汽吸热功率则由低压省煤器、低压汽包和低压过热过程的焓流率增量相加得到。上述分项指标用于判断余热锅炉不同压力等级蒸汽对联合循环底循环的贡献。
+
+\section{汽轮机的建模方法}
+
+本文将汽轮机划分为高压缸、中压缸和低压缸三部分进行考虑。两台余热锅炉高压主蒸汽混合后进入高压缸做功，高压缸出口蒸汽与中压主蒸汽混合，再热后进入 中压缸做功；中压缸出口蒸汽与低压主蒸汽混合，进入低压缸做功。在冬季供热工况下，低压蒸汽直接进入热网，不再进入低压缸做功。
+
+对于任一汽轮机缸 $k$，入口状态记为 $\mathcal{F}_{k,\mathrm{in}}$，实际出口状态记为 $\mathcal{F}_{k,\mathrm{out}}$。等熵出口状态记为 $\mathcal{F}_{k,s}$，其定义为
+\[
+P_{k,s}=P_{k,\mathrm{out}},
+\qquad
+s_{k,s}=s_{k,\mathrm{in}}.
+\]
+并得到等熵出口比焓 $h_{k,s}$。
+
+汽轮机缸实际比功为
+\[
+w_k
+=
+h_{k,\mathrm{in}}
+-
+h_{k,\mathrm{out}}.
+\]
+对应输出功率为
+\[
+\dot{W}_{k}
+=
+\dot{m}_{k,\mathrm{out}}
+\left(
+h_{k,\mathrm{in}}
+-
+h_{k,\mathrm{out}}
+\right).
+\]
+在稳态无泄漏近似下，$\dot{m}_{k,\mathrm{out}}\approx \dot{m}_{k,\mathrm{in}}$。汽轮机等熵效率定义为实际焓降与等熵焓降之比：
+\[
+\eta_{k,s}
+=
+\frac{
+h_{k,\mathrm{in}}-h_{k,\mathrm{out}}
+}{
+h_{k,\mathrm{in}}-h_{k,s}
+}.
+\]
+
+汽轮机功率计算值由各缸输出功率相加得到：
+\[
+\dot{W}_{\mathrm{ST,cal}}
+=
+\dot{W}_{\mathrm{HP}}
++
+\dot{W}_{\mathrm{IP}}
++
+\dot{W}_{\mathrm{LP}}.
+\]
+当低压缸进口压力低于设定阈值时，程序将该工况识别为低压缸切缸状态，此时总功率只包括高压缸和中压缸：
+\[
+\dot{W}_{\mathrm{ST,cal}}
+=
+\dot{W}_{\mathrm{HP}}
++
+\dot{W}_{\mathrm{IP}}.
+\]
+汽轮机总体等熵效率采用实测汽轮机功率与各缸理想等熵功率之和的比值表示：
+\[
+\eta_{\mathrm{ST},s}
+=
+\frac{
+\dot{W}_{\mathrm{ST,act}}
+}{
+\dot{W}_{\mathrm{HP},s}
++
+\dot{W}_{\mathrm{IP},s}
++
+\dot{W}_{\mathrm{LP},s}
+},
+\]
+其中，各缸理想等熵功率为
+\[
+\dot{W}_{k,s}
+=
+\dot{m}_{k,\mathrm{in}}
+\left(
+h_{k,\mathrm{in}}
+-
+h_{k,s}
+\right).
+\]
+
+\section{凝汽器、泵和辅助部件的建模方法}
+
+凝汽器用于将低压缸排汽凝结为凝结水，并将蒸汽余热排向冷端。本文程序将凝汽器视为一个单入口、单出口设备，入口为低压缸出口，出口为凝汽器出口。凝汽器放热功率由入口和出口焓流率之差计算：
+\[
+\dot{Q}_{\mathrm{cond}}
+=
+\dot{m}_{\mathrm{cond,in}}h_{\mathrm{cond,in}}
+-
+\dot{m}_{\mathrm{cond,out}}h_{\mathrm{cond,out}}.
+\]
+该指标反映低压缸排汽在凝汽器中的冷凝放热量，同时也影响凝汽器真空和低压缸排汽状态。
+
+泵模型用于描述凝结水泵、高压给水泵和中压给水泵等加压设备。对于任一泵 $p$，入口状态记为 $\mathcal{F}_{p,\mathrm{in}}$，实际出口状态记为 $\mathcal{F}_{p,\mathrm{out}}$。等熵出口状态 $\mathcal{F}_{p,s}$ 满足
+\[
+P_{p,s}=P_{p,\mathrm{out}},
+\qquad
+s_{p,s}=s_{p,\mathrm{in}}.
+\]
+泵实际比功为
+\[
+w_p
+=
+h_{p,\mathrm{out}}
+-
+h_{p,\mathrm{in}},
+\]
+输入功率为
+\[
+\dot{W}_{p}
+=
+\dot{m}_{p,\mathrm{out}}
+\left(
+h_{p,\mathrm{out}}
+-
+h_{p,\mathrm{in}}
+\right).
+\]
+泵等熵效率定义为等熵压缩比焓升与实际比焓升之比：
+\[
+\eta_{p,s}
+=
+\frac{
+h_{p,s}-h_{p,\mathrm{in}}
+}{
+h_{p,\mathrm{out}}-h_{p,\mathrm{in}}
+}.
+\]
+
+节流阀主要用于描述低压汽包给水调节阀等节流过程。程序计算节流阀压力降和比焓变化：
+\[
+\Delta P_{\mathrm{tv}}
+=
+P_{\mathrm{in}}-P_{\mathrm{out}},
+\]
+\[
+\Delta h_{\mathrm{tv}}
+=
+h_{\mathrm{out}}-h_{\mathrm{in}}.
+\]
+理想绝热节流过程中比焓近似不变，因此 $\Delta h_{\mathrm{tv}}$ 可用于检查测点和流股构造的一致性。
+
+混合器用于描述多股汽水流股混合过程，主要包括各股蒸汽合并，以及减温器冷却等。混合过程质量和能量守恒，但存在混合火用损失。
+
+\[
+\dot{m}_{m,\mathrm{out}}
+=
+\sum_{i\in\mathcal{F}_{m,\mathrm{in}}}
+\dot{m}_i .
+\]
+
+\[
+\sum_{i\in\mathcal{F}_{m,\mathrm{in}}}
+\dot{m}_i h_i
+=
+\dot{m}_{m,\mathrm{out}}h_{m,\mathrm{out}} .
+\]
+
+\[
+\dot{E}_{x,\mathrm{dest},m}
+=
+\sum_{i\in\mathcal{F}_{m,\mathrm{in}}}
+\dot{m}_i e_{x,i}
+-
+\dot{m}_{m,\mathrm{out}}e_{x,m,\mathrm{out}} .
+\]
+
+\section{汽水侧性能分析}
+

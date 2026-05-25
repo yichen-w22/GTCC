@@ -1,4 +1,5 @@
 import sys
+from functools import cached_property
 from pathlib import Path
 
 
@@ -13,97 +14,74 @@ from energy_analysis.working_fluid.gas import GasState
 
 
 @dataclass
-class CompressorResult:
-    state_2: GasState
-    state_2s: GasState
-    efficiency: float
-    delta_h: float
-    power: float | None
-    bleeding: GasState | None
-
-
-@dataclass
 class Compressor(EnergyConverter):
-    def isentropic_efficiency(self, state_1: GasState, state_2: GasState) -> tuple[float, GasState]:
-        state_2s = state_1.__class__.from_Ps(
-            P=state_2.P,
-            s=state_1.s,
-            m_dot=state_2.m_dot,
-            composition=state_1.composition,
+    inlet_gas: GasState | None = None
+    outlet_gas: GasState | None = None
+    bleeding_mass_fraction: float = 0.0
+    bleeding_pressure_fraction: float = 1.0
+    bleeding_energy_fraction: float = 1.0
+
+    @cached_property
+    def state_2s(self) -> GasState:
+        return self.inlet_gas.__class__.from_Ps(
+            P=self.outlet_gas.P,
+            s=self.inlet_gas.s,
+            m_dot=self.outlet_gas.m_dot,
+            composition=self.inlet_gas.composition,
             name=f"{self.name}_state_2s",
-            ref=state_1.ref,
+            ref=self.inlet_gas.ref,
         )
-        efficiency = (state_2s.h - state_1.h) / (state_2.h - state_1.h)
-        return efficiency, state_2s
 
-    def work(
-        self,
-        state_1: GasState,
-        state_2: GasState,
-        bleeding: GasState | None = None,
-    ) -> float | None:
-        if state_1.m_dot is None or state_2.m_dot is None:
+    @cached_property
+    def isentropic_efficiency(self) -> float:
+        return (self.state_2s.h - self.inlet_gas.h) / (self.outlet_gas.h - self.inlet_gas.h)
+
+    @cached_property
+    def efficiency(self) -> float:
+        return self.isentropic_efficiency
+
+    @cached_property
+    def exergy_efficiency(self) -> float:
+        return (self.state_2s.exergy - self.inlet_gas.exergy) / (self.outlet_gas.exergy - self.inlet_gas.exergy)
+
+    @cached_property
+    def isentropic_loss(self) -> float | None:
+        if self.outlet_gas.m_dot is None:
             return None
+        return (self.outlet_gas.h - self.state_2s.h) * self.outlet_gas.m_dot
 
-        power = state_2.h * state_2.m_dot + bleeding.h * bleeding.m_dot - state_1.h * state_1.m_dot
-        return power
-
-    def bleeding(
-        self,
-        bleeding_mass_fraction: float,
-        bleeding_pressure_fraction: float,
-        bleeding_energy_fraction: float,
-        inlet_gas: GasState,
-        outlet_gas: GasState,
-    ) -> GasState | None:
-
-        bleeding_mass = inlet_gas.m_dot * bleeding_mass_fraction
-        bleeding_pressure = inlet_gas.P + (outlet_gas.P - inlet_gas.P) * bleeding_pressure_fraction
-        bleeding_energy = inlet_gas.h + (outlet_gas.h - inlet_gas.h) * bleeding_energy_fraction
+    @cached_property
+    def bleeding(self) -> GasState:
+        bleeding_mass = self.inlet_gas.m_dot * self.bleeding_mass_fraction
+        bleeding_pressure = self.inlet_gas.P + (self.outlet_gas.P - self.inlet_gas.P) * self.bleeding_pressure_fraction
+        bleeding_energy = self.inlet_gas.h + (self.outlet_gas.h - self.inlet_gas.h) * self.bleeding_energy_fraction
         return GasState.from_Ph(
             P=bleeding_pressure,
             h=bleeding_energy,
             m_dot=bleeding_mass,
-            composition=inlet_gas.composition,
+            composition=self.inlet_gas.composition,
             name=f"{self.name}_bleeding",
-            ref=inlet_gas.ref,
+            ref=self.inlet_gas.ref,
         )
 
-    def state_2(self, bleeding_mass_fraction: float, inlet_gas: GasState, outlet_gas: GasState) -> GasState:
-        m_dot = inlet_gas.m_dot * (1.0 - bleeding_mass_fraction)
-        return outlet_gas.__class__.from_TP(
-            T=outlet_gas.T,
-            P=outlet_gas.P,
+    @cached_property
+    def state_2(self) -> GasState:
+        m_dot = self.inlet_gas.m_dot * (1.0 - self.bleeding_mass_fraction)
+        return self.outlet_gas.__class__.from_TP(
+            T=self.outlet_gas.T,
+            P=self.outlet_gas.P,
             m_dot=m_dot,
-            composition=outlet_gas.composition,
+            composition=self.outlet_gas.composition,
             name=f"{self.name}_state_2",
-            ref=outlet_gas.ref,
+            ref=self.outlet_gas.ref,
         )
 
-    def solve(
-        self,
-        inlet_gas: GasState,
-        outlet_gas: GasState,
-        bleeding_mass_fraction: float = 0.0,
-        bleeding_pressure_fraction: float = 1.0,
-        bleeding_energy_fraction: float = 1.0,
-    ) -> CompressorResult:
-        efficiency, state_2s = self.isentropic_efficiency(inlet_gas, outlet_gas)
-        bleeding_gas = self.bleeding(
-            bleeding_mass_fraction=bleeding_mass_fraction,
-            bleeding_pressure_fraction=bleeding_pressure_fraction,
-            bleeding_energy_fraction=bleeding_energy_fraction,
-            inlet_gas=inlet_gas,
-            outlet_gas=outlet_gas,
-        )
-        state_2 = self.state_2(bleeding_mass_fraction=bleeding_mass_fraction, inlet_gas=inlet_gas, outlet_gas=outlet_gas)
-        power = self.work(state_1=inlet_gas, state_2=state_2, bleeding=bleeding_gas)
-        delta_h = outlet_gas.h - inlet_gas.h
-        return CompressorResult(
-            state_2=state_2,
-            state_2s=state_2s,
-            efficiency=efficiency,
-            delta_h=delta_h,
-            power=power,
-            bleeding=bleeding_gas,
-        )
+    @cached_property
+    def power(self) -> float | None:
+        if self.inlet_gas.m_dot is None or self.state_2.m_dot is None:
+            return None
+        return self.state_2.h * self.state_2.m_dot + self.bleeding.h * self.bleeding.m_dot - self.inlet_gas.h * self.inlet_gas.m_dot
+
+    @cached_property
+    def delta_h(self) -> float:
+        return self.outlet_gas.h - self.inlet_gas.h

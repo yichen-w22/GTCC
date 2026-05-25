@@ -15,20 +15,19 @@ DEFAULT_DATA_PATH = PROJECT_ROOT / "data_precessing" / "continuous_data_10min.cs
 
 def build_plant_from_streams(streams: dict, gases: dict):
     plant = {}
+    unit_running = {
+        1: gases["1号余热锅炉入口烟气"].m_dot > 10.0,
+        2: gases["2号余热锅炉入口烟气"].m_dot > 10.0,
+    }
 
     # 余热锅炉
     plant["hrsg1"] = GasWaterHeatExchanger(name="hrsg1")
     plant["hrsg1"].add_inlet(gases["1号余热锅炉入口烟气"])
     plant["hrsg1"].add_outlet(gases["1号余热锅炉出口烟气"])
-    plant["hrsg1"].add_inlet(streams["1号炉高压省煤器入口"])
-    plant["hrsg1"].add_outlet(streams["1号炉高压过热器出口"])
-    plant["hrsg1"].add_inlet(streams["1号炉高压减温器后"])
+    plant["hrsg1"].add_inlet(streams["1号炉低压汽包高压给水泵后"])
     plant["hrsg1"].add_outlet(streams["1号炉高压主蒸汽"])
-    plant["hrsg1"].add_inlet(streams["1号炉中压省煤器入口"])
-    plant["hrsg1"].add_outlet(streams["1号炉中压过热器出口"])
-    plant["hrsg1"].add_inlet(streams["1号炉冷再热混合后"])
-    plant["hrsg1"].add_outlet(streams["1号炉再热器1出口"])
-    plant["hrsg1"].add_inlet(streams["1号炉再热减温器出口"])
+    plant["hrsg1"].add_inlet(streams["1号炉低压汽包中压给水泵后"])
+    plant["hrsg1"].add_inlet(streams["1号炉高压缸排汽"])
     plant["hrsg1"].add_outlet(streams["1号炉热再热出口"])
     plant["hrsg1"].add_inlet(streams["1号炉低压省煤器入口"])
     plant["hrsg1"].add_outlet(streams["1号炉低压省煤器出口"])
@@ -37,18 +36,13 @@ def build_plant_from_streams(streams: dict, gases: dict):
     plant["hrsg1"].add_inlet(streams["1号炉低压汽包至低压主蒸汽"])
     plant["hrsg1"].add_outlet(streams["1号炉低压主蒸汽"])
 
-    plant["hrsg2"] = GasWaterHeatExchanger(name="hrsg2") #！
+    plant["hrsg2"] = GasWaterHeatExchanger(name="hrsg2")
     plant["hrsg2"].add_inlet(gases["2号余热锅炉入口烟气"])
     plant["hrsg2"].add_outlet(gases["2号余热锅炉出口烟气"])
-    plant["hrsg2"].add_inlet(streams["2号炉高压省煤器入口"])
-    plant["hrsg2"].add_outlet(streams["2号炉高压过热器出口"])
-    plant["hrsg2"].add_inlet(streams["2号炉高压减温器后"])
+    plant["hrsg2"].add_inlet(streams["2号炉低压汽包高压给水泵后"])
     plant["hrsg2"].add_outlet(streams["2号炉高压主蒸汽"])
-    plant["hrsg2"].add_inlet(streams["2号炉中压省煤器入口"])
-    plant["hrsg2"].add_outlet(streams["2号炉中压过热器出口"])
-    plant["hrsg2"].add_inlet(streams["2号炉冷再热混合后"])
-    plant["hrsg2"].add_outlet(streams["2号炉再热器1出口"])
-    plant["hrsg2"].add_inlet(streams["2号炉再热减温器出口"])
+    plant["hrsg2"].add_inlet(streams["2号炉低压汽包中压给水泵后"])
+    plant["hrsg2"].add_inlet(streams["2号炉高压缸排汽"])
     plant["hrsg2"].add_outlet(streams["2号炉热再热出口"])
     plant["hrsg2"].add_inlet(streams["2号炉低压省煤器入口"])
     plant["hrsg2"].add_outlet(streams["2号炉低压省煤器出口"])
@@ -139,26 +133,31 @@ def build_plant_from_streams(streams: dict, gases: dict):
 
     # 出口主蒸汽合并
     plant["hp"] = Mixer(name="hp")
-    plant["hp"].add_inlet(streams["1号炉高压主蒸汽"])
-    plant["hp"].add_inlet(streams["2号炉高压主蒸汽"])
+    if unit_running[1]:
+        plant["hp"].add_inlet(streams["1号炉高压主蒸汽"])
+    if unit_running[2]:
+        plant["hp"].add_inlet(streams["2号炉高压主蒸汽"])
     plant["hp"].add_outlet(streams["高压缸入口"])
 
     plant["ip"] = Mixer(name="ip")
-    plant["ip"].add_inlet(streams["1号炉热再热出口"])
-    plant["ip"].add_inlet(streams["2号炉热再热出口"])
+    if unit_running[1]:
+        plant["ip"].add_inlet(streams["1号炉热再热出口"])
+    if unit_running[2]:
+        plant["ip"].add_inlet(streams["2号炉热再热出口"])
     plant["ip"].add_outlet(streams["中压缸入口"])
 
     plant["lp"] = Mixer(name="lp")
-    plant["lp"].add_inlet(streams["1号炉低压主蒸汽"])
-    plant["lp"].add_inlet(streams["2号炉低压主蒸汽"])
+    if unit_running[1]:
+        plant["lp"].add_inlet(streams["1号炉低压主蒸汽"])
+    if unit_running[2]:
+        plant["lp"].add_inlet(streams["2号炉低压主蒸汽"])
     plant["lp"].add_inlet(streams["中压缸出口"])
-    plant["lp"].add_outlet(streams["低压缸入口"])
+    plant["lp"].add_outlet(streams["中压缸出口抽汽后"])
 
     return plant
 
 
-def build_plant(idx: int = 100, data_path: str | Path = DEFAULT_DATA_PATH):
-    df = pd.read_csv(data_path)
+def build_plant(df: pd.DataFrame = None, idx: int = 100):
     streams = build_streams_from_row(df, idx)
     gases = build_gases_from_row(df, idx)
     return build_plant_from_streams(streams, gases)

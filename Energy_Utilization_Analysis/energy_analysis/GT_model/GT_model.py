@@ -1,4 +1,5 @@
 import sys
+from functools import cached_property
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -7,88 +8,112 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from dataclasses import dataclass, field
 
-from energy_analysis.working_fluid.gas import GasComposition, GasState
-
-from energy_analysis.GT_model.components.chamber import Chamber, ChamberResult
-from energy_analysis.GT_model.components.compressor import Compressor, CompressorResult
+from energy_analysis.GT_model.components.chamber import Chamber
+from energy_analysis.GT_model.components.compressor import Compressor
+from energy_analysis.GT_model.components.turbine import Turbine
 from energy_analysis.GT_model.config import GTModelConfig
-from energy_analysis.GT_model.components.turbine import Turbine, TurbineResult
-
-
-@dataclass
-class GTModelResult:
-    state_1: GasState
-    state_2: GasState
-    fuel: GasState
-    state_3: GasState
-    state_4: GasState
-    compressor: CompressorResult
-    chamber: ChamberResult
-    turbine: TurbineResult
-    net_power: float | None
+from energy_analysis.working_fluid.gas import GasState
+from energy_analysis.working_fluid.streams import build_gases_from_row
 
 
 @dataclass
 class GTModel:
+    state_1: GasState | None = None
+    compressor_outlet: GasState | None = None
+    fuel: GasState | None = None
+    state_4: GasState | None = None
     config: GTModelConfig = field(default_factory=GTModelConfig)
-    compressor: Compressor = field(default_factory=lambda: Compressor(name="compressor"))
-    chamber: Chamber = field(default_factory=lambda: Chamber(name="chamber"))
-    turbine: Turbine = field(default_factory=lambda: Turbine(name="turbine"))
 
-    def solve(
-        self,
-        state_1: GasState,
-        state_2: GasState,
-        fuel: GasState,
-        state_4: GasState,
-        compressor_bleeding_mass_fraction: float | None = None,
-        compressor_bleeding_pressure_fraction: float | None = None,
-        compressor_bleeding_energy_fraction: float | None = None,
-        total_pressure_recovery: float | None = None,
-        combustion_efficiency: float | None = None,
-    ) -> GTModelResult:
-        
-        if compressor_bleeding_mass_fraction is None:
-            compressor_bleeding_mass_fraction = self.config.compressor_bleeding_mass_fraction
-        if compressor_bleeding_pressure_fraction is None:
-            compressor_bleeding_pressure_fraction = self.config.compressor_bleeding_pressure_fraction
-        if compressor_bleeding_energy_fraction is None:
-            compressor_bleeding_energy_fraction = self.config.compressor_bleeding_energy_fraction
-        if total_pressure_recovery is None:
-            total_pressure_recovery = self.config.total_pressure_recovery
-        if combustion_efficiency is None:
-            combustion_efficiency = self.config.combustion_efficiency
-
-        compressor_result = self.compressor.solve(
-            inlet_gas=state_1,
-            outlet_gas=state_2,
-            bleeding_mass_fraction=compressor_bleeding_mass_fraction,
-            bleeding_pressure_fraction=compressor_bleeding_pressure_fraction,
-            bleeding_energy_fraction=compressor_bleeding_energy_fraction,
-        )
-        chamber_result = self.chamber.solve(
-            inlet_air=compressor_result.state_2,
-            inlet_fuel=fuel,
-            outlet_compositon=state_4.composition,
-            total_pressure_recovery=total_pressure_recovery,
-            combustion_efficiency=combustion_efficiency,
-        )
-        turbine_result = self.turbine.solve(
-            state_3=chamber_result.state_3,
-            state_4=state_4,
-            bleeding=compressor_result.bleeding,
+    @cached_property
+    def compressor(self) -> Compressor:
+        return Compressor(
+            name="compressor",
+            inlet_gas=self.state_1,
+            outlet_gas=self.compressor_outlet,
+            bleeding_mass_fraction=self.config.compressor_bleeding_mass_fraction,
+            bleeding_pressure_fraction=self.config.compressor_bleeding_pressure_fraction,
+            bleeding_energy_fraction=self.config.compressor_bleeding_energy_fraction,
         )
 
-        net_power = turbine_result.power - compressor_result.power
-
-        return GTModelResult(
-            state_1=state_1,
-            state_2=compressor_result.state_2,
-            fuel=fuel,
-            state_3=chamber_result.state_3,
-            state_4=turbine_result.state_4,
-            compressor=compressor_result,
-            chamber=chamber_result,
-            turbine=turbine_result,
-            net_power=net_power,
+    @cached_property
+    def chamber(self) -> Chamber:
+        return Chamber(
+            name="chamber",
+            inlet_air=self.compressor.state_2,
+            inlet_fuel=self.fuel,
+            outlet_composition=self.state_4.composition,
+            total_pressure_recovery=self.config.total_pressure_recovery,
+            combustion_efficiency=self.config.combustion_efficiency,
+            bleeding=self.compressor.bleeding,
         )
+
+    @cached_property
+    def turbine(self) -> Turbine:
+        return Turbine(
+            name="turbine",
+            state_3_c=self.chamber.state_3_c,
+            state_4=self.state_4
+        )
+
+    @cached_property
+    def state_2(self) -> GasState:
+        return self.compressor.state_2
+
+    @cached_property
+    def state_3(self) -> GasState:
+        return self.chamber.state_3
+    
+    @cached_property
+    def state_3_c(self) -> GasState:
+        return self.chamber.state_3_c
+
+    @cached_property
+    def net_power(self) -> float | None:
+        if self.turbine.power is None or self.compressor.power is None:
+            return None
+        return self.turbine.power - self.compressor.power
+
+    @cached_property
+    def fuel_energy(self) -> float:
+        return self.chamber.fuel_lhv * self.fuel.m_dot
+
+    @cached_property
+    def thermal_efficiency(self) -> float | None:
+        if self.fuel_energy == 0:
+            return None
+        return self.net_power / self.fuel_energy
+
+    @cached_property
+    def generation_power_share(self) -> float | None:
+        if self.turbine.power in (None, 0) or self.net_power is None:
+            return None
+        return self.net_power / self.turbine.power
+
+    @cached_property
+    def compressor_power_share(self) -> float | None:
+        if self.turbine.power in (None, 0) or self.compressor.power is None:
+            return None
+        return self.compressor.power / self.turbine.power
+
+    @cached_property
+    def exhaust_energy_share(self) -> float | None:
+        if self.turbine.power in (None, 0) or self.state_4.energy_flow is None:
+            return None
+        return self.state_4.energy_flow / self.turbine.power
+
+
+def build_gt(df, idx, unit):
+    gases = build_gases_from_row(df, idx)
+    if unit == 1:
+        unit_name = "1号"
+    elif unit == 2:
+        unit_name = "2号"
+    else:
+        raise ValueError("unit must be 1 or 2")
+
+    return GTModel(
+        state_1=gases[f"{unit_name}燃机入口空气"],
+        compressor_outlet=gases[f"{unit_name}燃机压气机出口"],
+        fuel=gases[f"{unit_name}炉燃料"],
+        state_4=gases[f"{unit_name}余热锅炉入口烟气"],
+    )

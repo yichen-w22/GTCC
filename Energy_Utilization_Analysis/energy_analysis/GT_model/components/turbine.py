@@ -1,4 +1,5 @@
 import sys
+from functools import cached_property
 from pathlib import Path
 
 
@@ -13,45 +14,41 @@ from energy_analysis.working_fluid.gas import GasState
 
 
 @dataclass
-class TurbineResult:
-    state_4: GasState
-    state_4s: GasState
-    efficiency: float
-    delta_h: float
-    power: float | None
-
-
-@dataclass
 class Turbine(EnergyConverter):
-    def isentropic_efficiency(self, state_3: GasState, state_4: GasState) -> tuple[float, GasState]:
-        state_4s = state_3.__class__.from_Ps(
-            P=state_4.P,
-            s=state_3.s,
-            m_dot=state_4.m_dot,
-            composition=state_3.composition,
-            name=f"{self.name}_state_4s",
-            ref=state_3.ref,
-        )
-        efficiency = (state_3.h - state_4.h) / (state_3.h - state_4s.h)
-        return efficiency, state_4s
+    state_3_c: GasState | None = None
+    state_4: GasState | None = None
 
-    def work(self, state_3: GasState, state_4: GasState, bleeding: GasState | None = None) -> float | None:
-        if state_3.m_dot is None:
-            return None
-        return state_3.m_dot * state_3.h + bleeding.m_dot * bleeding.h - state_4.m_dot * state_4.h
-    
-    def solve(
-        self,
-        state_3: GasState,
-        state_4: GasState,
-        bleeding: GasState | None = None,
-    ) -> TurbineResult:
-        efficiency, state_4s = self.isentropic_efficiency(state_3, state_4)
-        power = self.work(state_3, state_4, bleeding=bleeding)
-        return TurbineResult(
-            state_4=state_4,
-            state_4s=state_4s,
-            efficiency=efficiency,
-            delta_h=state_3.h - state_4.h,
-            power=power
+    @cached_property
+    def state_4s(self) -> GasState:
+        return self.state_3_c.__class__.from_Ps(
+            P=self.state_4.P,
+            s=self.state_3_c.s,
+            m_dot=self.state_4.m_dot,
+            composition=self.state_3_c.composition,
+            name=f"{self.name}_state_4s",
+            ref=self.state_3_c.ref,
         )
+
+    @cached_property
+    def isentropic_efficiency(self) -> float:
+        return (self.state_3_c.h - self.state_4.h) / (self.state_3_c.h - self.state_4s.h)
+
+    @cached_property
+    def efficiency(self) -> float:
+        return self.isentropic_efficiency
+
+    @cached_property
+    def exergy_efficiency(self) -> float:
+        return (self.state_3_c.exergy - self.state_4.exergy) / (self.state_3_c.exergy - self.state_4s.exergy)
+
+    @cached_property
+    def isentropic_loss(self) -> float | None:
+        if self.state_4.m_dot is None:
+            return None
+        return (self.state_4.h - self.state_4s.h) * self.state_4.m_dot
+
+    @cached_property
+    def power(self) -> float | None:
+        if self.state_3_c.m_dot is None:
+            return None
+        return self.state_3_c.m_dot * self.state_3_c.h - self.state_4.m_dot * self.state_4.h

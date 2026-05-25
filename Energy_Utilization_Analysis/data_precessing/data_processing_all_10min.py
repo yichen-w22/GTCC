@@ -177,6 +177,8 @@ averaging_groups = {
     "凝结水泵出口流量": ["凝结水泵出口流量"],
     "凝结水泵出口母管压力": ["凝结水泵出口母管压力"],
     "汽机出力": ["汽机发电机功率"],
+    "热网抽汽流量": ["采暖抽汽流量"],
+    "热网换热量": ["二期热网瞬时热量"],
 
     # ===== 燃料气体组分 =====
     "H2": ["H2"],
@@ -214,12 +216,12 @@ derived_cols["燃料质量流量_1"] = df_processed["燃料流量_1"] * 0.764 / 
 derived_cols["烟气质量流量_2"] = (
     p0 / (R_mix * (df_processed["排烟烟温_2"] + 273.15))
     * df_processed["余热锅炉出口烟气流量_2"] / 3600
-) * 1.138
+)
 # * 1.251 # 烟气流量修正系数
 derived_cols["烟气质量流量_1"] = (
     p0 / (R_mix * (df_processed["排烟烟温_1"] + 273.15))
     * df_processed["余热锅炉出口烟气流量_1"] / 3600
-) * 1.138
+)
 # * 1.138 # 烟气流量修正系数
 
 # 删掉原体积流量列
@@ -271,6 +273,7 @@ flow_columns = [
     "中压过热器出口流量_2", "热再热蒸汽流量_2", "低压给水流量_2", "低压主蒸汽流量_2",
     "高压给水流量_1", "高压减温水流量_1", "高压主蒸汽流量_1", "中压给水流量_1", "中压减温水流量_1",
     "中压过热器出口流量_1", "热再热蒸汽流量_1", "低压给水流量_1", "低压主蒸汽流量_1", "凝结水泵出口流量",
+    "热网抽汽流量"
 ]
 df_processed[flow_columns] = df_processed[flow_columns] * 1000 / 3600
 
@@ -279,20 +282,23 @@ df_processed["燃机出力_2"] = df_processed["燃机出力_2"] * 1000000
 df_processed["燃机出力_1"] = df_processed["燃机出力_1"] * 1000000
 df_processed["汽机出力"] = df_processed["汽机出力"] * 1000000
 
+# GJ/h -> J/s
+df_processed["热网换热量"] = df_processed["热网换热量"] * 1e9 / 3600
+
 # 计算衍生变量（统一收集，再拼接）
 derived_cols["进入高压汽包流量_2"] = df_processed["高压给水流量_2"] - df_processed["高压减温水流量_2"]
 derived_cols["进入中压汽包流量_2"] = df_processed["中压给水流量_2"] - df_processed["中压减温水流量_2"]
 derived_cols["高压缸排汽进入锅炉_2"] = df_processed["热再热蒸汽流量_2"] - df_processed["中压给水流量_2"]
 derived_cols["燃机进口空气流量_2"] = derived_cols["烟气质量流量_2"] - derived_cols["燃料质量流量_2"]
-derived_cols["燃机进口空气流量_2"] = (0.174416 - 0.00185363 * derived_cols["燃机进口空气流量_2"] + 0.0616191 * derived_cols["燃料质量流量_2"]) \
-    * derived_cols["燃机进口空气流量_2"] + derived_cols["燃机进口空气流量_2"]
+# derived_cols["燃机进口空气流量_2"] = (0.174416 - 0.00185363 * derived_cols["燃机进口空气流量_2"] + 0.0616191 * derived_cols["燃料质量流量_2"]) \
+#     * derived_cols["燃机进口空气流量_2"] + derived_cols["燃机进口空气流量_2"]
 
 derived_cols["进入高压汽包流量_1"] = df_processed["高压给水流量_1"] - df_processed["高压减温水流量_1"]
 derived_cols["进入中压汽包流量_1"] = df_processed["中压给水流量_1"] - df_processed["中压减温水流量_1"]
 derived_cols["高压缸排汽进入锅炉_1"] = df_processed["热再热蒸汽流量_1"] - df_processed["中压给水流量_1"]
 derived_cols["燃机进口空气流量_1"] = derived_cols["烟气质量流量_1"] - derived_cols["燃料质量流量_1"]
-derived_cols["燃机进口空气流量_1"] = (0.291151 - 0.00218959 * derived_cols["燃机进口空气流量_1"] + 0.0661845 * derived_cols["燃料质量流量_1"]) \
-    * derived_cols["燃机进口空气流量_1"] + derived_cols["燃机进口空气流量_1"]
+# derived_cols["燃机进口空气流量_1"] = (0.291151 - 0.00218959 * derived_cols["燃机进口空气流量_1"] + 0.0661845 * derived_cols["燃料质量流量_1"]) \
+#     * derived_cols["燃机进口空气流量_1"] + derived_cols["燃机进口空气流量_1"]
 
 df_processed = pd.concat([df_processed, pd.DataFrame(derived_cols, index=df_processed.index)], axis=1)
 
