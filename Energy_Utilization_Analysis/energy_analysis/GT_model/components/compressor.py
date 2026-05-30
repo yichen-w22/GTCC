@@ -37,12 +37,8 @@ class Compressor(EnergyConverter):
         return (self.state_2s.h - self.inlet_gas.h) / (self.outlet_gas.h - self.inlet_gas.h)
 
     @cached_property
-    def efficiency(self) -> float:
-        return self.isentropic_efficiency
-
-    @cached_property
     def exergy_efficiency(self) -> float:
-        return (self.state_2s.exergy - self.inlet_gas.exergy) / (self.outlet_gas.exergy - self.inlet_gas.exergy)
+        return (self.outlet_gas.exergy - self.inlet_gas.exergy) / (self.outlet_gas.h - self.inlet_gas.h)
 
     @cached_property
     def isentropic_loss(self) -> float | None:

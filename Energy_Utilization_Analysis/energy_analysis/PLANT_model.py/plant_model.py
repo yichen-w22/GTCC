@@ -15,7 +15,7 @@ from energy_analysis.working_fluid.streams import build_streams_from_row
 
 DATA_PATH = PROJECT_ROOT / "data_precessing" / "averaged_data_10min.csv"
 OUTPUT_DIR = PROJECT_ROOT / "temp"
-OUTPUT_PATH = OUTPUT_DIR / "plant_metrics.csv"
+OUTPUT_PATH = OUTPUT_DIR / "plant_metrics2.csv"
 GT_POWER_STOP_THRESHOLD = 1.0e6
 GT_FUEL_FLOW_STOP_THRESHOLD = 5.0
 GT_FLUE_GAS_FLOW_STOP_THRESHOLD_LOWER = 100.0
@@ -279,45 +279,45 @@ def cal_property(df, idx):
     return metrics
 
 
-if __name__ == "__main__":
-    df = pd.read_csv(DATA_PATH)
-    sample_count = min(10000, len(df))
-    indexes = np.linspace(0, len(df) - 1, sample_count, dtype=int)
-    results = []
-    total_start = time.perf_counter() 
+# if __name__ == "__main__":
+#     df = pd.read_csv(DATA_PATH)
+#     sample_count = min(1000, len(df))
+#     indexes = np.linspace(0, len(df) - 1, sample_count, dtype=int)
+#     results = []
+#     total_start = time.perf_counter() 
 
-    for i, idx in enumerate(indexes, start=1):
-        point_start = time.perf_counter()
-        print(f"计算第 {i}/{sample_count} 个点: idx={idx}")
-        try:
-            results.append(cal_property(df, idx))
-        except Exception as exc:
-            results.append({"idx": idx, "error": str(exc)})
-        point_time = time.perf_counter() - point_start
-        elapsed = time.perf_counter() - total_start
-        avg_time = elapsed / i
-        remaining_time = avg_time * (sample_count - i)
-        print(
-            f"idx={idx} 耗时 {point_time:.2f}s, "
-            f"已用 {elapsed:.2f}s, "
-            f"平均 {avg_time:.2f}s/点, "
-            f"预计剩余 {remaining_time:.2f}s"
-        )
+#     for i, idx in enumerate(indexes, start=1):
+#         point_start = time.perf_counter()
+#         print(f"计算第 {i}/{sample_count} 个点: idx={idx}")
+#         try:
+#             results.append(cal_property(df, idx))
+#         except Exception as exc:
+#             results.append({"idx": idx, "error": str(exc)})
+#         point_time = time.perf_counter() - point_start
+#         elapsed = time.perf_counter() - total_start
+#         avg_time = elapsed / i
+#         remaining_time = avg_time * (sample_count - i)
+#         print(
+#             f"idx={idx} 耗时 {point_time:.2f}s, "
+#             f"已用 {elapsed:.2f}s, "
+#             f"平均 {avg_time:.2f}s/点, "
+#             f"预计剩余 {remaining_time:.2f}s"
+#         )
 
-        if i % 500 == 0:
-            OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-            pd.DataFrame(results).to_csv(OUTPUT_PATH, index=False, encoding="utf-8-sig")
+#         if i % 500 == 0:
+#             OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+#             pd.DataFrame(results).to_csv(OUTPUT_PATH, index=False, encoding="utf-8-sig")
 
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    pd.DataFrame(results).to_csv(OUTPUT_PATH, index=False, encoding="utf-8-sig")
-    total_time = time.perf_counter() - total_start
-    print(f"总耗时: {total_time:.2f}s, 平均耗时: {total_time / sample_count:.2f}s/点")
+#     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+#     pd.DataFrame(results).to_csv(OUTPUT_PATH, index=False, encoding="utf-8-sig")
+#     total_time = time.perf_counter() - total_start
+#     print(f"总耗时: {total_time:.2f}s, 平均耗时: {total_time / sample_count:.2f}s/点")
     print(f"结果已保存: {OUTPUT_PATH}")
 
-# if __name__ == "__main__":
-#     idx = 6000
-#     df = pd.read_csv(DATA_PATH)
-#     results = cal_property(df, idx)
+if __name__ == "__main__":
+    idx = 6000
+    df = pd.read_csv(DATA_PATH)
+    results = cal_property(df, idx)
 
-#     for key, value in results.items():
-#         print(f"{key}: {value}")
+    for key, value in results.items():
+        print(f"{key}: {value}")

@@ -37,6 +37,7 @@ class Turbine(EnergyConverter):
         if inlet.h is None or outlet.h is None:
             return None
         return inlet.h - outlet.h
+    
     @cached_property
     def power_output(self) -> float | None:
         outlet = self.outlets[0]
@@ -57,16 +58,8 @@ class Turbine(EnergyConverter):
             return None, outlet_s
         return (inlet.h - outlet.h) / denominator, outlet_s
 
-    def solve(self) -> TurbineResult:
-        efficiency, outlet_s = self.isentropic_efficiency
-        return TurbineResult(
-            inlets=list(self.inlets),
-            outlets=list(self.outlets),
-            outlet_s=outlet_s,
-            isentropic_efficiency=efficiency,
-            specific_work=self.specific_work,
-            power_output=self.power_output,
-            mass_balance=self.mass_balance,
-            energy_balance=self.energy_balance,
-            exergy_balance=self.exergy_balance,
-        )
+    @cached_property
+    def exergy_efficiency(self) -> tuple[float | None, WaterSteamState]:
+        inlet = self.inlets[0]
+        outlet = self.outlets[0]
+        return (inlet.h - outlet.h) / (inlet.exergy - outlet.exergy)

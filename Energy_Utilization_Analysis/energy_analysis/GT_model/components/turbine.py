@@ -34,12 +34,8 @@ class Turbine(EnergyConverter):
         return (self.state_3_c.h - self.state_4.h) / (self.state_3_c.h - self.state_4s.h)
 
     @cached_property
-    def efficiency(self) -> float:
-        return self.isentropic_efficiency
-
-    @cached_property
     def exergy_efficiency(self) -> float:
-        return (self.state_3_c.exergy - self.state_4.exergy) / (self.state_3_c.exergy - self.state_4s.exergy)
+        return (self.state_3_c.h - self.state_4.h) / (self.state_3_c.exergy - self.state_4.exergy)
 
     @cached_property
     def isentropic_loss(self) -> float | None:
