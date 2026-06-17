@@ -1,0 +1,389 @@
+{
+  "result_point": [
+    {
+      "varname": "SKY.GTCC.NLXL_100",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 51.13595638718949,
+      "period": 1
+    },
+    {
+      "varname": "SKY.GTCC.FDXL_100",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 51.13595638718949,
+      "period": 1
+    },
+    {
+      "varname": "SKY.GTCC.YXL_100",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": null,
+      "period": 1
+    },
+    {
+      "varname": "SKY.GTCC.RH_MW",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 817.0514550400884,
+      "period": 1
+    },
+    {
+      "varname": "SKY.GT1.RXL_100",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 27.476185680812705,
+      "period": 1
+    },
+    {
+      "varname": "SKY.GT1.CMP.DSXL_100",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 77.35640660540997,
+      "period": 1
+    },
+    {
+      "varname": "SKY.GT1.CMP.HG_MW",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 172.23648776755115,
+      "period": 1
+    },
+    {
+      "varname": "SKY.GT1.COMB.T3_K",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 1493.1566715240479,
+      "period": 1
+    },
+    {
+      "varname": "SKY.GT1.RH_MW",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 410.8183484492688,
+      "period": 1
+    },
+    {
+      "varname": "SKY.GT1.TURB.DSXL_100",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 86.73530684092559,
+      "period": 1
+    },
+    {
+      "varname": "SKY.GT1.TURB.YXL_100",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 94.71911171574548,
+      "period": 1
+    },
+    {
+      "varname": "SKY.GT1.TURB.ZG_MW",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 286.57562243341465,
+      "period": 1
+    },
+    {
+      "varname": "SKY.GT1.CMP.DSSS_MW",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 39.59444663672612,
+      "period": 1
+    },
+    {
+      "varname": "SKY.GT1.TURB.DSSS_MW",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 43.826877852888,
+      "period": 1
+    },
+    {
+      "varname": "SKY.GT2.RXL_100",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 27.869824120371174,
+      "period": 1
+    },
+    {
+      "varname": "SKY.GT2.CMP.DSXL_100",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 77.35640660540997,
+      "period": 1
+    },
+    {
+      "varname": "SKY.GT2.CMP.HG_MW",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 167.82565463673333,
+      "period": 1
+    },
+    {
+      "varname": "SKY.GT2.COMB.T3_K",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 1503.8747787475586,
+      "period": 1
+    },
+    {
+      "varname": "SKY.GT2.RH_MW",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 406.23310659081966,
+      "period": 1
+    },
+    {
+      "varname": "SKY.GT2.TURB.DSXL_100",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 87.81360085453241,
+      "period": 1
+    },
+    {
+      "varname": "SKY.GT2.TURB.YXL_100",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 95.20170825601468,
+      "period": 1
+    },
+    {
+      "varname": "SKY.GT2.TURB.ZG_MW",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 284.8728394515808,
+      "period": 1
+    },
+    {
+      "varname": "SKY.GT2.CMP.DSSS_MW",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 38.580465805571635,
+      "period": 1
+    },
+    {
+      "varname": "SKY.GT2.TURB.DSSS_MW",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 39.53344463132204,
+      "period": 1
+    },
+    {
+      "varname": "SKY.HRSG1.HRXL_100",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 168.23020760240473,
+      "period": 1
+    },
+    {
+      "varname": "SKY.HRSG1.YXL_100",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 137.22710725248925,
+      "period": 1
+    },
+    {
+      "varname": "SKY.HRSG1.HST.XRL_MW",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 156.3144730046609,
+      "period": 1
+    },
+    {
+      "varname": "SKY.HRSG1.RST.XRL_MW",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 218.58167690219585,
+      "period": 1
+    },
+    {
+      "varname": "SKY.HRSG1.LST.XRL_MW",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 62.82602882436499,
+      "period": 1
+    },
+    {
+      "varname": "SKY.HRSG1.YQRL_MW",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 260.1923786278231,
+      "period": 1
+    },
+    {
+      "varname": "SKY.HRSG2.HRXL_100",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 172.50789005844888,
+      "period": 1
+    },
+    {
+      "varname": "SKY.HRSG2.YXL_100",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 140.7153567461666,
+      "period": 1
+    },
+    {
+      "varname": "SKY.HRSG2.HST.XRL_MW",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 156.3144730046609,
+      "period": 1
+    },
+    {
+      "varname": "SKY.HRSG2.RST.XRL_MW",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 218.58167690219585,
+      "period": 1
+    },
+    {
+      "varname": "SKY.HRSG2.LST.XRL_MW",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 62.82602882436499,
+      "period": 1
+    },
+    {
+      "varname": "SKY.HRSG2.YQRL_MW",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 253.7403817198815,
+      "period": 1
+    },
+    {
+      "varname": "SKY.HRSG1.GYZFQ.HRXL_100",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": null,
+      "period": 1
+    },
+    {
+      "varname": "SKY.HRSG1.GYZFQ.HRWC",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": null,
+      "period": 1
+    },
+    {
+      "varname": "SKY.HRSG1.GYZFQ.XRGL",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": null,
+      "period": 1
+    },
+    {
+      "varname": "SKY.HRSG1.GYZFQ.HRXN",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": null,
+      "period": 1
+    },
+    {
+      "varname": "SKY.HRSG1.ZYZFQ.HRXL_100",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": null,
+      "period": 1
+    },
+    {
+      "varname": "SKY.HRSG1.ZYZFQ.HRWC",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": null,
+      "period": 1
+    },
+    {
+      "varname": "SKY.HRSG1.ZYZFQ.XRGL",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": null,
+      "period": 1
+    },
+    {
+      "varname": "SKY.HRSG1.ZYZFQ.HRXN",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": null,
+      "period": 1
+    },
+    {
+      "varname": "SKY.HRSG2.GYZFQ.HRXL_100",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": null,
+      "period": 1
+    },
+    {
+      "varname": "SKY.HRSG2.GYZFQ.HRWC",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": null,
+      "period": 1
+    },
+    {
+      "varname": "SKY.HRSG2.GYZFQ.XRGL",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": null,
+      "period": 1
+    },
+    {
+      "varname": "SKY.HRSG2.GYZFQ.HRXN",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": null,
+      "period": 1
+    },
+    {
+      "varname": "SKY.HRSG2.ZYZFQ.HRXL_100",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": null,
+      "period": 1
+    },
+    {
+      "varname": "SKY.HRSG2.ZYZFQ.HRWC",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": null,
+      "period": 1
+    },
+    {
+      "varname": "SKY.HRSG2.ZYZFQ.XRGL",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": null,
+      "period": 1
+    },
+    {
+      "varname": "SKY.HRSG2.ZYZFQ.HRXN",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": null,
+      "period": 1
+    },
+    {
+      "varname": "SKY.ST.DSXL_100",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 83.40805334996007,
+      "period": 1
+    },
+    {
+      "varname": "SKY.ST.HST.DSXL_100",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 818.5428369124022,
+      "period": 1
+    },
+    {
+      "varname": "SKY.ST.HST.YXL_100",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 235.05392550441266,
+      "period": 1
+    },
+    {
+      "varname": "SKY.ST.HST.ZG_MW",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 378.88158922305115,
+      "period": 1
+    },
+    {
+      "varname": "SKY.ST.HST.ZZQLL_kg_s",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 111.76666790123457,
+      "period": 1
+    },
+    {
+      "varname": "SKY.ST.IST.DSXL_100",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": null,
+      "period": 1
+    },
+    {
+      "varname": "SKY.ST.IST.YXL_100",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": null,
+      "period": 1
+    },
+    {
+      "varname": "SKY.ST.IST.ZG_MW",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": null,
+      "period": 1
+    },
+    {
+      "varname": "SKY.ST.IST.ZRQLL_kg_s",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 131.2557512345679,
+      "period": 1
+    },
+    {
+      "varname": "SKY.ST.LST.DSXL_100",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 78.22628040718894,
+      "period": 1
+    },
+    {
+      "varname": "SKY.ST.LST.YXL_100",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 78.84682005495857,
+      "period": 1
+    },
+    {
+      "varname": "SKY.ST.LST.ZG_MW",
+      "timestamp": "2025-09-02 05:53:00",
+      "value": 84.75025477419194,
+      "period": 1
+    }
+  ],
+  "event_key": "JYRD.Performance.Computed"
+}

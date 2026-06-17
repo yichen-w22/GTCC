@@ -4,7 +4,7 @@ import fastavro
 from pathlib import Path
 
 KEY = "jqrd"
-CODE = "JQRD_11HAJ80CT601XQ01"
+CODE = "JQRD_12MBA26CT900ZQ01"
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 

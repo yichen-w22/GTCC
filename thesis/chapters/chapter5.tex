@@ -1,43 +1,186 @@
-\chapter{燃气蒸汽联合循环建模分析方法}
-\section{联合循环效率影响因素相关性分析}
+\chapter{联合循环整机性能影响因素分析}
 
-为分析不同运行工况下联合循环效率的主要影响因素，本节基于运行数据分别对非供热工况和供热工况进行 Pearson 相关性分析。非供热工况以联合循环发电效率作为分析对象，供热工况以联合循环热电效率作为分析对象。相关性分析中选取负荷水平、环境参数、给水参数、主蒸汽参数、空气流量和透平排气温度等变量。对于原始测点数据，依据性能计算结果中的样本索引 \texttt{idx} 回溯至原始数据表进行逐点匹配；两台机组对应的温度、压力参数取平均值，流量参数取两台机组之和。
+\section{相关性分析方法与总体结果}
 
-表~\ref{tab:chapter5_efficiency_correlation_top10} 给出了两类工况下与效率相关性绝对值最大的前十个因素。可以看出，非供热工况下，联合循环发电效率主要受汽机出力、环境压力、环境温度、给水压力、整机出力以及主蒸汽流量等因素影响；供热工况下，联合循环热电效率主要受供热量、环境条件、汽机出力、空气流量和燃机总出力影响。
+为分析不同运行工况下联合循环效率的主要影响因素，本章基于运行数据分别对非供热工况和供热工况进行 Pearson 相关性分析。非供热工况以联合循环发电效率作为分析对象，供热工况以联合循环热电效率作为分析对象。其目的是在大量运行数据中识别效率变化最敏感的运行参数，为后续运行优化和性能诊断提供方向。
 
-\begin{table}[htbp]
+需要指出的是，Pearson 相关系数仅度量两个变量之间的线性相关程度，不能反映非线性关系，也不能直接推断因果关系。此外，联合循环各运行参数之间存在显著的多重共线性——例如负荷水平同时影响空气流量、排气温度、蒸汽流量和给水压力——在这种情况下，单变量相关系数可能被混淆因素放大或掩盖。同时，运行数据中参数变化往往与季节、负荷调度等外部条件耦合，导致统计相关性并不一定反映变量之间的直接物理作用。因此，本章的相关性分析结果应作为筛选关键变量的辅助工具，其物理含义需要结合机组运行机理进行审慎解读。
+
+图~\ref{fig:chapter5-pearson-non-heating} 和图~\ref{fig:chapter5-pearson-heating} 分别给出了非供热工况和供热工况下主要运行变量之间的相关系数矩阵。表~\ref{tab:chapter5_efficiency_correlation_top10} 给出了两类工况下与效率相关性绝对值最大的前十个因素。可以看出，非供热工况下，联合循环发电效率主要受汽机出力、环境压力、环境温度、给水压力、联合循环发电功率以及主蒸汽流量等因素影响；供热工况下，联合循环热电效率主要受供热量、环境条件、汽机出力、空气流量和燃机总出力影响。两类工况的主要影响因素差异明显，说明供热运行改变了联合循环效率评价的物理含义：非供热工况更关注燃料化学能向电功的转化效率，供热工况则同时关注电功输出和热网供热输出。值得注意的是，表中部分相关系数的方向与单一物理机理预期不一致——例如非供热工况下环境温度与发电效率呈正相关、环境压力与发电效率呈负相关，以及供热工况下汽机出力与热电效率呈负相关。这些现象主要源于运行数据中负荷调度、季节变化和效率定义差异等混淆因素的作用，将在下一节结合各变量散点关系进行具体讨论。
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.8\textwidth]{chapter5/非供热皮尔森矩阵.png}
+  \caption{非供热工况 Pearson 相关系数矩阵}
+  \label{fig:chapter5-pearson-non-heating}
+\end{figure}
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.8\textwidth]{chapter5/供热皮尔森矩阵.png}
+  \caption{供热工况 Pearson 相关系数矩阵}
+  \label{fig:chapter5-pearson-heating}
+\end{figure}
+
+\begin{table}[!htb]
   \centering
   \caption{不同工况下联合循环效率主要相关因素}
   \label{tab:chapter5_efficiency_correlation_top10}
-  \begin{tabular}{cllcc}
+  \fontsize{10.5pt}{16pt}\selectfont
+  \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}cc@{\hspace{3em}}cc@{\extracolsep{\fill}}}
     \toprule
-    工况 & 分析对象 & 影响因素 & Pearson相关系数 & 相关方向 \\
+    \multicolumn{2}{c}{非供热工况发电效率} & \multicolumn{2}{c}{供热工况热电效率} \\
+    影响因素 & 相关系数 & 影响因素 & 相关系数 \\
     \midrule
-    非供热工况 & 联合循环发电效率 & 汽机出力 & 0.621 & 正相关 \\
-    非供热工况 & 联合循环发电效率 & 环境压力 & -0.528 & 负相关 \\
-    非供热工况 & 联合循环发电效率 & 环境温度 & 0.481 & 正相关 \\
-    非供热工况 & 联合循环发电效率 & 低压给水压力 & 0.474 & 正相关 \\
-    非供热工况 & 联合循环发电效率 & 整机出力 & 0.466 & 正相关 \\
-    非供热工况 & 联合循环发电效率 & 高压主蒸汽流量 & 0.428 & 正相关 \\
-    非供热工况 & 联合循环发电效率 & 高压给水压力 & 0.412 & 正相关 \\
-    非供热工况 & 联合循环发电效率 & 中压主蒸汽流量 & 0.410 & 正相关 \\
-    非供热工况 & 联合循环发电效率 & 中压给水压力 & 0.405 & 正相关 \\
-    非供热工况 & 联合循环发电效率 & 透平排气温度 & 0.398 & 正相关 \\
-    \midrule
-    供热工况 & 联合循环热电效率 & 供热量 & 0.966 & 正相关 \\
-    供热工况 & 联合循环热电效率 & 环境温度 & -0.930 & 负相关 \\
-    供热工况 & 联合循环热电效率 & 环境压力 & 0.781 & 正相关 \\
-    供热工况 & 联合循环热电效率 & 汽机出力 & -0.739 & 负相关 \\
-    供热工况 & 联合循环热电效率 & 环境湿度 & -0.710 & 负相关 \\
-    供热工况 & 联合循环热电效率 & 空气流量 & 0.386 & 正相关 \\
-    供热工况 & 联合循环热电效率 & 燃机总出力 & 0.355 & 正相关 \\
-    供热工况 & 联合循环热电效率 & 低压给水压力 & -0.348 & 负相关 \\
-    供热工况 & 联合循环热电效率 & 高压给水压力 & 0.200 & 正相关 \\
-    供热工况 & 联合循环热电效率 & 中压主蒸汽流量 & 0.192 & 正相关 \\
+    汽机出力 & 0.621 & 供热量 & 0.966 \\
+    环境压力 & $-$0.528 & 环境温度 & $-$0.930 \\
+    环境温度 & 0.481 & 环境压力 & 0.781 \\
+    低压给水压力 & 0.474 & 汽机出力 & $-$0.739 \\
+    联合循环发电功率 & 0.466 & 环境湿度 & $-$0.710 \\
+    高压主蒸汽流量 & 0.428 & 空气流量 & 0.386 \\
+    高压给水压力 & 0.412 & 燃机总出力 & 0.355 \\
+    中压主蒸汽流量 & 0.410 & 低压给水压力 & $-$0.348 \\
+    中压给水压力 & 0.405 & 高压给水压力 & 0.200 \\
+    透平排气温度 & 0.398 & 中压主蒸汽流量 & 0.192 \\
     \bottomrule
-  \end{tabular}
+  \end{tabular*}
 \end{table}
 
-对于非供热工况，汽机出力与发电效率相关性最高，说明在非供热运行时，蒸汽循环对余热的回收利用水平是影响联合循环效率的重要因素。环境压力与效率呈负相关，而环境温度在样本中呈正相关，这一结果与机组运行负荷、季节性运行方式及环境参数之间的耦合有关，后续需结合散点图进一步区分直接影响和工况伴随变化。低压给水压力和整机出力均与效率呈正相关，表明较高负荷和较强的余热回收能力通常对应更高的联合循环发电效率。
+\FloatBarrier
 
-对于供热工况，供热量与热电效率高度正相关，这是由于热电效率将供热量计入有效输出。当供热量增加时，虽然汽机出力可能因抽汽供热而降低，但热电联产的总有效输出提高，因此汽机出力与热电效率呈明显负相关。环境温度、环境压力和环境湿度在供热工况下也表现出较强相关性，说明供热运行具有显著季节特征，环境条件不仅影响燃气轮机性能，也与供热需求变化密切耦合。
+\section{联合循环效率影响因素分析}
+
+\subsection{负荷水平与供热量的影响}
+
+图~\ref{fig:chapter5-gt-total-output-efficiency}--\ref{fig:chapter5-heating-load-efficiency} 给出了负荷水平和供热量与联合循环效率之间的关系。
+
+在非供热工况下，燃机出力（图~\ref{fig:chapter5-gt-total-output-efficiency}）、汽机出力（图~\ref{fig:chapter5-st-output-efficiency}）和联合循环发电功率（图~\ref{fig:chapter5-total-output-efficiency}）均与发电效率呈正相关，说明机组负荷提高通常伴随着燃气轮机和蒸汽循环效率改善。其原因在于高负荷下燃气轮机排气温度和排气流量较高，余热锅炉产生的蒸汽量增加，汽轮机通流量更接近设计值，底循环余热回收能力增强。低负荷区间效率离散较大，主要与燃气轮机部分负荷运行、汽轮机通流偏离设计工况以及余热锅炉换热温差匹配变化有关。
+
+在供热工况下，供热量与热电效率高度正相关（图~\ref{fig:chapter5-heating-load-efficiency}，相关系数达0.966），这是由于热电效率的定义将供热量计入有效输出（$\eta = (W_{\mathrm{e}} + Q_{\mathrm{h}}) / Q_{\mathrm{f}}$），供热量增加直接提高了分子中的热输出项，因此供热输出是供热工况下决定热电效率变化的主导因素。燃机出力在供热工况下也与热电效率呈正相关，表明燃气轮机负荷提高能够增加排气余热供给，为余热锅炉产生更多蒸汽和热网供热提供条件。然而，汽机出力在供热工况下与热电效率呈负相关（相关系数$-$0.739），这一现象看似反常，实际上可以从热电效率的定义加以理解：供热工况下增加汽轮机做功出力意味着减少中低压缸抽汽量，供热量因此下降；当供热量的减少幅度大于发电量的增加幅度时，热电效率的分子总值反而降低，从而表现为汽机出力与热电效率的负相关。这一结果说明，在供热工况下不应孤立追求汽轮机出力最大化，而应在发电与供热之间寻求综合效率最优的分配方案。
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.8\textwidth]{chapter5/燃机总出力_效率关系.png}
+  \caption{燃机出力与联合循环效率关系}
+  \label{fig:chapter5-gt-total-output-efficiency}
+\end{figure}
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.8\textwidth]{chapter5/汽机出力_效率关系.png}
+  \caption{汽机出力与联合循环效率关系}
+  \label{fig:chapter5-st-output-efficiency}
+\end{figure}
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.8\textwidth]{chapter5/整机出力_效率关系.png}
+  \caption{联合循环发电功率与效率关系}
+  \label{fig:chapter5-total-output-efficiency}
+\end{figure}
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.8\textwidth]{chapter5/供热量_效率关系.png}
+  \caption{供热量与联合循环效率关系}
+  \label{fig:chapter5-heating-load-efficiency}
+\end{figure}
+
+\FloatBarrier
+
+\subsection{给水压力的影响}
+
+图~\ref{fig:chapter5-hp-fw-pressure-efficiency}--\ref{fig:chapter5-lp-fw-pressure-efficiency} 反映了高压、中压和低压给水压力与效率的关系。在该机组实际运行范围内，给水压力与给水流量呈近似正相关，较高的给水压力通常对应较大的给水流量。但需要注意，给水压力本身并非单独决定效率的变量，而是与余热锅炉蒸汽压力等级、蒸汽产量和负荷水平密切相关。较高的给水压力通常对应较高的主蒸汽压力和更强的余热回收能力，有利于提高汽轮机可用焓降和循环平均吸热温度，因此与发电效率表现为正相关。低压给水压力相关性较高，可能与低压系统承担凝结水预热、低压蒸汽产生及部分供热边界变化有关，其变化能够反映底循环低温段余热利用状态。
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.8\textwidth]{chapter5/高压给水压力_效率关系.png}
+  \caption{高压给水压力与联合循环效率关系}
+  \label{fig:chapter5-hp-fw-pressure-efficiency}
+\end{figure}
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.8\textwidth]{chapter5/中压给水压力_效率关系.png}
+  \caption{中压给水压力与联合循环效率关系}
+  \label{fig:chapter5-ip-fw-pressure-efficiency}
+\end{figure}
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.8\textwidth]{chapter5/低压给水压力_效率关系.png}
+  \caption{低压给水压力与联合循环效率关系}
+  \label{fig:chapter5-lp-fw-pressure-efficiency}
+\end{figure}
+
+\FloatBarrier
+
+\subsection{环境参数的影响}
+
+图~\ref{fig:chapter5-ambient-temperature-efficiency}--\ref{fig:chapter5-ambient-humidity-efficiency} 给出了环境参数与联合循环效率的关系。
+
+在非供热工况下，环境温度与发电效率呈正相关（相关系数 +0.481），环境压力与发电效率呈负相关（相关系数 $-$0.528）。从单一物理机理来看，环境温度升高会导致压气机进气密度下降、压缩耗功增加，不利于发电效率；环境压力升高则增加进气密度，有利于发电效率。然而实际运行数据中的相关方向与上述简单推理相反，这主要是由于运行数据中环境参数的变化与负荷调度之间存在季节性耦合：该机组非供热季节主要集中在夏季高温期间，此时机组多处于较高负荷运行状态，高负荷本身带来的效率提升掩盖了环境温度升高的不利影响；而夏季环境压力通常低于冬季，因此低环境压力在数据中与高负荷、高效率共现。这类由混淆因素导致的相关方向反转是统计分析中的典型现象，说明环境参数对效率的影响不能脱离负荷水平单独解读。
+
+在供热工况下，环境温度与热电效率呈显著负相关（相关系数 $-$0.930），主要是因为环境温度降低时供热需求增加，热网吸收的有效热量增大，使热电效率定义中的分子显著提高。环境压力与热电效率呈正相关（相关系数 +0.781），除影响燃气轮机进气密度和空气流量外，也与冬季低温高压天气条件具有一定耦合——冬季环境压力偏高，同时供热需求最大，二者在统计上同向变化。环境湿度与热电效率呈负相关，可能反映湿度、温度和季节性供热需求之间的共同变化。
+
+由此可见，环境参数对效率的影响不仅包含燃气轮机进气性能变化等直接物理作用，还受到负荷调度策略和供热负荷季节性变化等间接因素的显著影响，在解读时需加以区分。
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.8\textwidth]{chapter5/环境温度_效率关系.png}
+  \caption{环境温度与联合循环效率关系}
+  \label{fig:chapter5-ambient-temperature-efficiency}
+\end{figure}
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.8\textwidth]{chapter5/环境压力_效率关系.png}
+  \caption{环境压力与联合循环效率关系}
+  \label{fig:chapter5-ambient-pressure-efficiency}
+\end{figure}
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.8\textwidth]{chapter5/环境湿度_效率关系.png}
+  \caption{环境湿度与联合循环效率关系}
+  \label{fig:chapter5-ambient-humidity-efficiency}
+\end{figure}
+
+\FloatBarrier
+
+\subsection{主蒸汽流量、空气流量和透平排气温度的影响}
+
+图~\ref{fig:chapter5-hp-steam-flow-efficiency}--\ref{fig:chapter5-exhaust-temperature-efficiency} 给出了高压主蒸汽流量、空气流量和透平排气温度与效率的关系。高压主蒸汽流量与效率呈正相关，说明高压蒸汽产量是底循环发电能力的重要表征，其变化直接反映余热锅炉高压段的吸热能力和汽轮机高压缸的做功量。
+
+空气流量和透平排气温度与效率也均表现出正相关。需要指出的是，这两个参数在运行中受燃气轮机负荷的强约束——负荷提高时压气机导叶开度增大导致空气流量增加，燃烧室出口温度和透平排气温度也相应升高。因此，空气流量和排气温度在很大程度上是负荷水平的代理变量，其与效率的正相关主要反映的是负荷效应，而非这两个参数对效率的独立影响。尽管如此，在相同负荷水平下，空气流量的变化仍能反映压气机进气条件的差异，排气温度的变化则能反映透平效率和余热锅炉入口热源品质的差异，因此二者在性能诊断中仍有辅助参考价值。此外，排气温度并非越高越好，若排气温度升高没有带来相应的汽水侧吸热增加，则可能表现为排烟损失增大。因此，上述三个参数应与燃气轮机负荷、余热锅炉吸热量和汽轮机出力共同评价。
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.8\textwidth]{chapter5/高压主蒸汽流量_效率关系.png}
+  \caption{高压主蒸汽流量与联合循环效率关系}
+  \label{fig:chapter5-hp-steam-flow-efficiency}
+\end{figure}
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.8\textwidth]{chapter5/空气流量_效率关系.png}
+  \caption{空气流量与联合循环效率关系}
+  \label{fig:chapter5-air-flow-efficiency}
+\end{figure}
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.8\textwidth]{chapter5/透平排气温度_效率关系.png}
+  \caption{透平排气温度与联合循环效率关系}
+  \label{fig:chapter5-exhaust-temperature-efficiency}
+\end{figure}
+
+\FloatBarrier
+
+\section{本章小结}
+
+本章基于实际运行数据，对联合循环效率影响因素进行 Pearson 相关性分析，并结合关键变量散点关系对主要影响因素的物理含义进行了讨论。
+
+分析结果表明，非供热工况下联合循环发电效率主要受负荷水平、汽轮机出力、主蒸汽流量、给水压力和环境条件等因素影响，提高效率的关键在于保持燃气轮机高效运行、降低排烟损失并提高蒸汽循环做功能力；供热工况下，供热量是决定热电效率的主导因素，汽机出力与热电效率呈负相关，说明供热工况下需要在发电与供热之间寻求最优分配，季节性环境条件通过改变供热需求对热电效率产生显著间接影响。
+
+分析还揭示了若干与单一物理机理预期不一致的相关方向，如非供热工况下环境温度的正相关和环境压力的负相关，这些现象源于运行数据中负荷调度与季节变化的耦合，提示 Pearson 相关分析的结果不能直接等同于因果关系。此外，空气流量和透平排气温度在很大程度上是负荷水平的代理变量，应当作为辅助判断标准。

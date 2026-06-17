@@ -92,7 +92,7 @@
 }
 
 \begin{center}
-  {\sffamily\bfseries\scaledfontsize{63}{75} Data-Driven Modeling and Optimization of a Gas-Steam Combined Cycle}\\[0.45em]
+  {\sffamily\bfseries\scaledfontsize{63}{75} Data-Driven Modeling and Analysis of a Gas-Steam Combined Cycle}\\[0.45em]
   {\scaledfontsize{38}{46} Yichen Wang}\\[0.25em]
   {\itshape\scaledfontsize{33}{40} Xingjian College, Tsinghua University, Beijing 100084, China}\\[0.65em]
   \color{theme}\rule{0.96\linewidth}{1.2mm}
@@ -103,18 +103,18 @@
 \begin{introbox}
 {\color{white}\sffamily\bfseries\scaledfontsize{44}{53} Introduction}\\[0.45em]
 {\color{white}\bodyfont
-This study builds a data-driven thermodynamic analysis framework for a gas-steam combined cycle unit, covering working-fluid modeling, gas-turbine analysis, steam/water-side analysis, and whole-plant efficiency-factor analysis. Historical operation data are used to reconstruct key thermodynamic states, quantify energy distribution, and compare power-only and heating modes, providing a basis for operation optimization and long-term performance assessment.}
+This study builds a thermodynamic analysis framework for a 2-on-1 gas-steam combined heat and power (CHP) unit based on field operation data (April--December 2025). The framework covers working-fluid modeling, gas-turbine and steam/water-side energy analysis, and whole-plant efficiency-factor analysis under both power-only and heating modes.}
 \end{introbox}
 
 \vspace{0.65cm}
 
-\begin{minipage}[t][0.78\textheight][t]{0.48\linewidth}
+\begin{minipage}[t][0.78\textheight][t]{0.488\linewidth}
 \vspace{0pt}
 
 \begin{sectionbox}{1. Working-Fluid Modeling}
 \bodyfont
 \begin{center}
-  \includegraphics[width=0.75\linewidth]{../../thesis/figures/chapter2/工质建模示意图.png}
+  \includegraphics[width=0.75\linewidth]{../../thesis/figures0/chapter2/工质建模示意图.png}
   \figcap{Fig. 1. Working-fluid state and property modeling.}
 \end{center}
 \smallbodyfont
@@ -126,12 +126,12 @@ Gas, air, fuel, water, and steam streams are represented by unified flow-state o
 \begin{sectionbox}{2. Gas-Turbine Analysis}
 \bodyfont
 \begin{center}
-  \includegraphics[width=0.84\linewidth]{../../thesis/figures/chapter3/燃机出力.png}
+  \includegraphics[width=0.84\linewidth]{../../thesis/figures0/chapter3/1燃机出力.png}
   \figcap{Fig. 2. Gas-turbine calculated and measured power.}
 \end{center}
 \vspace{0.25em}
 \begin{center}
-  \includegraphics[width=0.84\linewidth]{../../thesis/figures/chapter3/能量分配.png}
+  \includegraphics[width=0.84\linewidth]{../../thesis/figures0/chapter3/2能量分配散点图.png}
   \figcap{Fig. 3. Fuel-energy distribution in the gas turbine.}
 \end{center}
 \smallbodyfont
@@ -143,12 +143,12 @@ The gas-turbine model evaluates compressor work, turbine work, net power, fuel e
 \begin{sectionbox}{3. Steam/Water-Side Analysis}
 \bodyfont
 \begin{center}
-  \includegraphics[width=0.84\linewidth]{../../thesis/figures/chapter4/水侧吸热分配.png}
+  \includegraphics[width=0.84\linewidth]{../../thesis/figures0/chapter4/2水侧吸热分配.png}
   \figcap{Fig. 4. Heat absorption distribution on the steam/water side.}
 \end{center}
 \vspace{0.25em}
 \begin{center}
-  \includegraphics[width=0.65\linewidth]{../../thesis/figures/chapter4/各缸出力分配.png}
+  \includegraphics[width=0.65\linewidth]{../../thesis/figures0/chapter4/4各缸出力分配.png}
   \figcap{Fig. 5. Power distribution among HP, IP, and LP cylinders.}
 \end{center}
 \smallbodyfont
@@ -156,55 +156,55 @@ The HRSG transfers gas-side heat to high-pressure steam, intermediate-pressure/r
 \end{sectionbox}
 
 \end{minipage}
-\hfill
-\begin{minipage}[t][0.78\textheight][t]{0.48\linewidth}
+\hspace{2.0cm}
+\begin{minipage}[t][0.78\textheight][t]{0.488\linewidth}
 \vspace{0pt}
 
 \begin{sectionbox}{4. Whole-Plant Efficiency}
 \bodyfont
 \begin{center}
-  \includegraphics[width=0.86\linewidth]{../../thesis/figures/chapter5/整机效率分析.png}
+  \includegraphics[width=0.8\linewidth]{../../thesis/figures0/chapter5/整机出力_效率关系.png}
   \figcap{Fig. 6. Combined-cycle efficiency versus total plant power.}
 \end{center}
 \smallbodyfont
-The power-only samples form separated clusters because the plant switches between single- and dual-gas-turbine operation. Heating samples show higher overall utilization since heat supply is counted as useful output in the CHP efficiency definition.
+Power-only samples cluster by single-GT versus dual-GT operation. Heating samples reach higher utilization because CHP efficiency counts heat supply as useful output: $\eta_{\mathrm{CHP}} = (W_{\mathrm{e}} + Q_{\mathrm{h}}) / Q_{\mathrm{f}}$.
 \vspace{0.25em}
 \begin{center}
-  \includegraphics[width=0.86\linewidth]{../../thesis/figures/chapter5/皮尔森系数矩阵.png}
+  \includegraphics[width=0.86\linewidth]{../../thesis/figures0/chapter5/皮尔森系数矩阵.png}
   \figcap{Fig. 7. Pearson correlation matrices for power-only and heating modes.}
 \end{center}
 \smallbodyfont
-Power-only operation is evaluated by electric efficiency, while heating operation is evaluated by combined heat-and-power efficiency. The two operating modes are analyzed separately because heat supply changes the numerator of the efficiency definition.
+The two modes are analyzed separately: power-only uses electric efficiency while heating uses CHP efficiency, since heat supply changes the numerator of the efficiency definition and reverses the sign of some correlations.
 \end{sectionbox}
 
 \vspace{0.65cm}
 
-\begin{sectionbox}{5. Optimization Methods}
+\begin{sectionbox}{5. Key Efficiency Factors}
 \smallbodyfont
-The correlation and scatter analyses suggest four practical optimization directions: operating-mode classification, heat-supply scheduling, steam-side parameter control, and gas-turbine air-flow management.
+Pearson correlation and scatter-plot analyses identify the dominant factors for each mode. In power-only operation, efficiency correlates most with ST output, ambient pressure, and HP main-steam flow. In heating operation, CHP efficiency is dominated by heat supply ($r=0.966$) and ambient temperature ($r=-0.930$); ST output is negatively correlated ($r=-0.739$) because increased generation reduces heating extraction.
 \vspace{0.2em}
 \begin{center}
   \begin{minipage}[t]{0.48\linewidth}
     \centering
-    \includegraphics[width=\linewidth]{../../thesis/figures/chapter5/环境温度_效率关系.png}
-    \figcap{Fig. 8. Ambient temperature versus efficiency.}
+    \includegraphics[width=\linewidth]{../../thesis/figures0/chapter5/环境温度_效率关系.png}
+    \figcap{Fig. 8. Ambient temperature vs. efficiency.}
   \end{minipage}\hfill
   \begin{minipage}[t]{0.48\linewidth}
     \centering
-    \includegraphics[width=\linewidth]{../../thesis/figures/chapter5/供热量_效率关系.png}
-    \figcap{Fig. 9. Heat supply versus efficiency.}
+    \includegraphics[width=\linewidth]{../../thesis/figures0/chapter5/供热量_效率关系.png}
+    \figcap{Fig. 9. Heat supply vs. efficiency.}
   \end{minipage}
 
   \vspace{0.2em}
   \begin{minipage}[t]{0.48\linewidth}
     \centering
-    \includegraphics[width=\linewidth]{../../thesis/figures/chapter5/高压主蒸汽流量_效率关系.png}
-    \figcap{Fig. 10. HP main-steam flow versus efficiency.}
+    \includegraphics[width=\linewidth]{../../thesis/figures0/chapter5/高压主蒸汽流量_效率关系.png}
+    \figcap{Fig. 10. HP main-steam flow vs. efficiency.}
   \end{minipage}\hfill
   \begin{minipage}[t]{0.48\linewidth}
     \centering
-    \includegraphics[width=\linewidth]{../../thesis/figures/chapter5/空气流量_效率关系.png}
-    \figcap{Fig. 11. Air flow versus efficiency.}
+    \includegraphics[width=\linewidth]{../../thesis/figures0/chapter5/空气流量_效率关系.png}
+    \figcap{Fig. 11. Air flow vs. efficiency.}
   \end{minipage}
 \end{center}
 \end{sectionbox}
@@ -214,18 +214,15 @@ The correlation and scatter analyses suggest four practical optimization directi
 \begin{sectionbox}{6. Summary and Future Work}
 \smallbodyfont
 \begin{itemize}
-  \item A plant-wide calculation workflow was established from working-fluid states to component and whole-plant performance.
-  \item Gas-turbine analysis identifies the distribution of fuel energy among power output, compressor work, and exhaust heat.
-  \item Steam/water-side analysis links HRSG heat absorption with steam-turbine cylinder power and heating extraction.
-  \item Whole-plant analysis shows that power-only and heating modes must be evaluated using different efficiency definitions.
-  \item Future work will combine operating-mode classification with long-term degradation assessment.
+  \item A unified flow-state framework supports component-level and plant-level energy analysis from field data.
+  \item GT analysis quantifies fuel-energy distribution among power output, compressor work, and exhaust heat.
+  \item HRSG and ST analysis links water-side heat absorption with cylinder power and heating extraction.
 \end{itemize}
 \end{sectionbox}
 
 \end{minipage}
 
 \vfill
-\color{theme}\rule{\linewidth}{0.8mm}\\[-0.1em]
-{\scaledfontsize{26.5}{32} Data source: raw operation data collected from Beijing Thermal Power Plant.}
+\color{theme}\rule{\linewidth}{0.8mm}
 
 \end{document}

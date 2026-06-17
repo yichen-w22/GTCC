@@ -1,4 +1,4 @@
-\documentclass[12pt,a4paper,openright,fontset=windows]{ctexbook}
+\documentclass[12pt,a4paper,openany,fontset=windows]{ctexbook}
 
 % ======================
 % 编译方式：XeLaTeX
@@ -13,6 +13,16 @@
 \setCJKmainfont{SimSun}        % 宋体
 \setCJKsansfont{SimHei}        % 黑体
 \setCJKmonofont{FangSong}      % 仿宋
+
+% ======================
+% 封面信息
+% ======================
+\newcommand{\thesistitle}{数据驱动的燃气-蒸汽联合循环机组性能评估与优化方法研究}
+\newcommand{\thesisdepartment}{请填写系别}
+\newcommand{\thesismajor}{请填写专业}
+\newcommand{\thesisauthor}{请填写姓名}
+\newcommand{\thesisadvisor}{请填写指导教师及职称}
+\newcommand{\thesisdate}{二〇二六年五月}
 
 % ======================
 % 页面设置
@@ -33,6 +43,7 @@
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{array}
+\usepackage{longtable}
 \usepackage{float}
 \usepackage{caption}
 \usepackage{subcaption}
@@ -42,10 +53,12 @@
 \usepackage{tocloft}
 \usepackage{fancyhdr}
 \usepackage[numbers,sort&compress,super]{natbib}
+\usepackage{pdfpages}
+\usepackage{placeins}
 \usepackage{hyperref}
 
 % ======================
-% 正文段落格式
+% 正文段落格式：宋体小四，行距固定值20磅
 % ======================
 \setlength{\parindent}{2em}
 \setlength{\parskip}{0pt}
@@ -62,10 +75,12 @@
 % ======================
 % 章节标题格式
 % ======================
+\ctexset{chapter/number=\arabic{chapter}}
+\renewcommand{\thechapter}{\arabic{chapter}}
 
-% 章标题：黑体三号，居中，段前24磅，段后18磅
+% 章标题：黑体三号，居中，段前24磅，段后18磅，英文/数字 Arial
 \titleformat{\chapter}
-  {\centering\heiti\fontsize{16pt}{20pt}\selectfont}
+  {\centering\sffamily\heiti\fontsize{16pt}{20pt}\selectfont}
   {第\,\thechapter\,章}
   {1em}
   {}
@@ -75,9 +90,21 @@
   {24pt}
   {18pt}
 
-% 一级节标题：黑体四号，居左，段前24磅，段后6磅
+% 无编号章标题（摘要、致谢等）：黑体三号，居中，段前24磅，段后18磅
+\titleformat{name=\chapter,numberless}
+  {\centering\sffamily\heiti\fontsize{16pt}{20pt}\selectfont}
+  {}
+  {0pt}
+  {}
+
+\titlespacing*{name=\chapter,numberless}
+  {0pt}
+  {24pt}
+  {18pt}
+
+% 一级节标题：黑体四号，居左，段前24磅，段后6磅，英文/数字 Arial
 \titleformat{\section}
-  {\heiti\fontsize{14pt}{20pt}\selectfont}
+  {\sffamily\heiti\fontsize{14pt}{20pt}\selectfont}
   {\thesection}
   {1em}
   {}
@@ -87,9 +114,9 @@
   {24pt}
   {6pt}
 
-% 二级节标题：黑体13pt，居左，段前12磅，段后6磅
+% 二级节标题：黑体13pt，居左，段前12磅，段后6磅，英文/数字 Arial
 \titleformat{\subsection}
-  {\heiti\fontsize{13pt}{20pt}\selectfont}
+  {\sffamily\heiti\fontsize{13pt}{20pt}\selectfont}
   {\thesubsection}
   {1em}
   {}
@@ -99,9 +126,9 @@
   {12pt}
   {6pt}
 
-% 三级节标题：黑体小四，居左，段前12磅，段后6磅
+% 三级节标题：黑体小四，居左，段前12磅，段后6磅，英文/数字 Arial
 \titleformat{\subsubsection}
-  {\heiti\fontsize{12pt}{20pt}\selectfont}
+  {\sffamily\heiti\fontsize{12pt}{20pt}\selectfont}
   {\thesubsubsection}
   {1em}
   {}
@@ -140,20 +167,55 @@
 \numberwithin{table}{chapter}
 \numberwithin{equation}{chapter}
 
+% 公式编号使用短横线格式：2-1 而非 2.1
+\renewcommand{\theequation}{\thechapter-\arabic{equation}}
+
 % ======================
 % 目录格式
 % ======================
 \renewcommand{\contentsname}{目录}
+\renewcommand{\listfigurename}{插图清单}
+\renewcommand{\listtablename}{附表清单}
 \setcounter{tocdepth}{1}
 
-\renewcommand{\cftchapfont}{\heiti\fontsize{12pt}{20pt}\selectfont}
-\renewcommand{\cftchappagefont}{\fontsize{12pt}{20pt}\selectfont}
+% 章条目：黑体小四，英文/数字 Arial，行距固定20磅，带点线引导
+\renewcommand{\cftchapfont}{\heiti\sffamily\fontsize{12pt}{20pt}\selectfont}
+\renewcommand{\cftchappagefont}{\sffamily\fontsize{12pt}{20pt}\selectfont}
+\renewcommand{\cftchapleader}{\cftdotfill{\cftdotsep}}
 
+% 一级节：宋体小四，缩进1个汉字符
+\setlength{\cftsecindent}{1em}
 \renewcommand{\cftsecfont}{\songti\fontsize{12pt}{20pt}\selectfont}
-\renewcommand{\cftsecpagefont}{\fontsize{12pt}{20pt}\selectfont}
+\renewcommand{\cftsecpagefont}{\songti\fontsize{12pt}{20pt}\selectfont}
 
+% 二级节：宋体小四，缩进2个汉字符
+\setlength{\cftsubsecindent}{2em}
 \renewcommand{\cftsubsecfont}{\songti\fontsize{12pt}{20pt}\selectfont}
-\renewcommand{\cftsubsecpagefont}{\fontsize{12pt}{20pt}\selectfont}
+\renewcommand{\cftsubsecpagefont}{\songti\fontsize{12pt}{20pt}\selectfont}
+
+% 插图清单标题：黑体三号，居中，段前24磅，段后18磅
+\renewcommand{\cftloftitlefont}{\hfill\heiti\fontsize{16pt}{20pt}\selectfont}
+\renewcommand{\cftafterloftitle}{\hfill}
+\setlength{\cftbeforeloftitleskip}{24pt}
+\setlength{\cftafterloftitleskip}{18pt}
+
+% 附表清单标题：同上
+\renewcommand{\cftlottitlefont}{\hfill\heiti\fontsize{16pt}{20pt}\selectfont}
+\renewcommand{\cftafterlottitle}{\hfill}
+\setlength{\cftbeforelottitleskip}{24pt}
+\setlength{\cftafterlottitleskip}{18pt}
+
+% 插图清单条目：宋体小四，行距20磅，编号前缀"图~"
+\renewcommand{\cftfigpresnum}{图~}
+\setlength{\cftfignumwidth}{4em}
+\renewcommand{\cftfigfont}{\songti\fontsize{12pt}{20pt}\selectfont}
+\renewcommand{\cftfigpagefont}{\songti\fontsize{12pt}{20pt}\selectfont}
+
+% 附表清单条目：宋体小四，行距20磅，编号前缀"表~"
+\renewcommand{\cfttabpresnum}{表~}
+\setlength{\cfttabnumwidth}{4em}
+\renewcommand{\cfttabfont}{\songti\fontsize{12pt}{20pt}\selectfont}
+\renewcommand{\cfttabpagefont}{\songti\fontsize{12pt}{20pt}\selectfont}
 
 % ======================
 % 超链接设置
@@ -172,11 +234,20 @@
 
 \begin{document}
 
+\includepdf[pages=-]{chapters/封面.pdf}
+\includepdf[pages=-]{chapters/授权说明.pdf}
+
+\pagenumbering{Roman}
+\include{chapters/abstract}
+
 % ======================
 % 目录
 % ======================
-\pagenumbering{Roman}
 \tableofcontents
+\cleardoublepage
+\listoffigures
+\cleardoublepage
+\listoftables
 \cleardoublepage
 
 % ======================
@@ -192,12 +263,25 @@
 \include{chapters/chapter6}
 
 % ======================
-% 参考文献
+% 参考文献：宋体五号(10.5pt)，英文 TNR，行距固定值16磅，段前3磅段后0磅，悬挂缩进2字符
 % ======================
 \cleardoublepage
 \addcontentsline{toc}{chapter}{参考文献}
 
+\begingroup
+\songti\fontsize{10.5pt}{16pt}\selectfont
+\setlength{\bibsep}{3pt plus 1pt minus 1pt}
+\setlength{\bibhang}{2em}
 \bibliographystyle{gbt7714-numerical}
-\bibliography{references}
+\bibliography{chapters/references}
+\endgroup
+
+\include{chapters/appendixA}
+\include{chapters/acknowledgements}
+\cleardoublepage
+\includepdf[pages=-]{chapters/声明.pdf}
+
+\cleardoublepage
+\includepdf[pages=-]{chapters/记录表.pdf}
 
 \end{document}

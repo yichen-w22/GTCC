@@ -2,98 +2,83 @@
 
 \section{汽水侧系统建模对象与总体思路}
 
-在燃气--蒸汽联合循环机组中，余热锅炉和汽轮机共同构成蒸汽侧循环。燃气轮机排出的高温烟气进入余热锅炉后，将热量传递给高压、中压和低压汽水系统，产生主蒸汽、再热蒸汽和低压蒸汽；蒸汽进入汽轮机各级缸膨胀做功，随后在凝汽器中凝结，并经凝结水泵、给水泵重新送入余热锅炉。本文在第 2 章所建立的统一流股对象基础上，将汽水侧设备划分为余热锅炉、汽轮机、凝汽器、泵、节流阀和混合器等模块，并通过各模块入口、出口流股的质量流量、焓流率和火用流率计算设备性能指标。
-
-\begin{figure}[htbp]
-  \centering
-  \fbox{%
-    \parbox[c][0.32\textheight][c]{0.82\textwidth}{%
-      \centering
-      汽水侧设备及流股连接关系示意图预留位置\\[0.6em]
-      图中建议绘制两台余热锅炉、高压缸、中压缸、低压缸、凝汽器、
-      凝结水泵和给水泵，并标注高压主蒸汽、热再热蒸汽、低压主蒸汽、
-      冷再热蒸汽和烟气侧进出口边界。
-    }%
-  }
-  \caption{汽水侧设备及流股连接关系}
-  \label{fig:steam-water-system-boundary}
-\end{figure}
+在燃气-蒸汽联合循环机组中，余热锅炉和汽轮机共同构成蒸汽侧循环。燃气轮机排出的高温烟气进入余热锅炉后，将热量传递给高压、中压和低压汽水系统，产生主蒸汽、再热蒸汽和低压蒸汽；蒸汽进入汽轮机各级缸膨胀做功，随后在凝汽器中凝结，并经凝结水泵、给水泵重新送入余热锅炉。本文在第 2 章所建立的统一流股对象基础上，将汽水侧设备划分为余热锅炉、汽轮机、凝汽器、泵、节流阀和混合器等模块，并通过各模块入口、出口流股的质量流量和焓流率计算设备性能指标。
 
 \section{余热锅炉的建模方法}
 
 余热锅炉是连接燃气轮机排气和蒸汽循环的换热设备。由于测点数量的限制，本文并不逐段建立省煤器、蒸发器、过热器和再热器的详细传热模型，而是从整台余热锅炉的能量输入和输出角度计算其换热性能。对于第 $j$ 台余热锅炉，烟气入口状态记为 $g,\mathrm{in}$，烟气出口状态记为 $g,\mathrm{out}$；汽水侧入口流股集合记为 $\mathcal{W}_{j,\mathrm{in}}$，汽水侧出口流股集合记为 $\mathcal{W}_{j,\mathrm{out}}$。
 
 烟气侧放热功率由入口烟气焓流率与出口烟气焓流率之差表示：
-\[
+\begin{equation}\label{eq:hrsg-gas-heat}
 \dot{Q}_{g,j}
 =
 \dot{m}_{g,\mathrm{in}}h_{g,\mathrm{in}}
 -
 \dot{m}_{g,\mathrm{out}}h_{g,\mathrm{out}}.
-\]
+\end{equation}
 汽水侧吸热功率为所有汽水出口焓流率与入口焓流率之差：
-\[
+\begin{equation}\label{eq:hrsg-water-heat}
 \dot{Q}_{w,j}
 =
 \sum_{o\in\mathcal{W}_{j,\mathrm{out}}}\dot{m}_o h_o
 -
 \sum_{i\in\mathcal{W}_{j,\mathrm{in}}}\dot{m}_i h_i.
-\]
+\end{equation}
 余热锅炉能量损失可表示为
-\[
+\begin{equation}\label{eq:hrsg-heat-loss}
 \dot{Q}_{\mathrm{loss},j}
 =
 \dot{Q}_{g,j}
 -
 \dot{Q}_{w,j}.
-\]
+\end{equation}
 余热锅炉换热效率采用汽水侧吸热功率与烟气侧放热功率之比表示：
-\[
+\begin{equation}\label{eq:hrsg-efficiency}
 \eta_{\mathrm{HRSG},j}
 =
 \frac{\dot{Q}_{w,j}}{\dot{Q}_{g,j}}.
-\]
+\end{equation}
 同时，为描述烟气在余热锅炉内释放能量占入口烟气总能量的比例，定义换热器有效性为
-\[
+\begin{equation}\label{eq:hrsg-effectiveness}
 \varepsilon_{\mathrm{HRSG},j}
 =
 \frac{\dot{Q}_{g,j}}{\dot{m}_{g,\mathrm{in}}h_{g,\mathrm{in}}}.
-\]
+\end{equation}
 
-在火用分析中，烟气侧释放火用为
-\[
+在㶲分析中，烟气侧释放㶲为
+\begin{equation}\label{eq:hrsg-gas-exergy}
 \dot{E}_{x,g,j}
 =
 \dot{m}_{g,\mathrm{in}}e_{x,g,\mathrm{in}}
 -
 \dot{m}_{g,\mathrm{out}}e_{x,g,\mathrm{out}},
-\]
-汽水侧吸收火用为
-\[
+\end{equation}
+汽水侧吸收㶲为
+\begin{equation}\label{eq:hrsg-water-exergy}
 \dot{E}_{x,w,j}
 =
 \sum_{o\in\mathcal{W}_{j,\mathrm{out}}}\dot{m}_o e_{x,o}
 -
 \sum_{i\in\mathcal{W}_{j,\mathrm{in}}}\dot{m}_i e_{x,i}.
-\]
-余热锅炉火用效率定义为汽水侧吸收火用与烟气侧释放火用之比：
-\[
+\end{equation}
+余热锅炉㶲效率定义为汽水侧吸收㶲与烟气侧释放㶲之比：
+\begin{equation}\label{eq:hrsg-exergy-eff}
 \eta_{\mathrm{HRSG},ex,j}
 =
 \frac{\dot{E}_{x,w,j}}{\dot{E}_{x,g,j}}.
-\]
-该指标反映烟气高温可用能转化为蒸汽可用能的有效程度。若烟气侧放热功率较高而汽水侧火用增量较低，则说明换热过程中存在较大的传热温差损失或排烟火用损失。
+\end{equation}
+该指标反映烟气高温可用能转化为蒸汽可用能的有效程度。若烟气侧放热功率较高而汽水侧㶲增量较低，则说明换热过程中存在较大的传热温差损失或排烟㶲损失。
 
 为进一步分析不同压力等级蒸汽的吸热贡献，程序还单独计算高压主蒸汽吸热功率、中压和再热蒸汽吸热功率以及低压主蒸汽吸热功率。高压主蒸汽吸热功率可表示为
-\[
+\begin{equation}\label{eq:hrsg-hp-heat}
 \dot{Q}_{\mathrm{HP},j}
 =
 \dot{H}_{\mathrm{HP,main},j}
 -
 \dot{H}_{\mathrm{HP,fw},j},
-\]
+\end{equation}
 中压和再热蒸汽吸热功率可表示为
-\[
+\begin{equation}\label{eq:hrsg-ip-rh-heat}
 \dot{Q}_{\mathrm{IP+RH},j}
 =
 \dot{H}_{\mathrm{HRH},j}
@@ -101,42 +86,34 @@
 \dot{H}_{\mathrm{IP,fw},j}
 -
 \dot{H}_{\mathrm{CRH},j},
-\]
+\end{equation}
 低压主蒸汽吸热功率则由低压省煤器、低压汽包和低压过热过程的焓流率增量相加得到。上述分项指标用于判断余热锅炉不同压力等级蒸汽对联合循环底循环的贡献。
 
 \section{汽轮机的建模方法}
 
-本文将汽轮机划分为高压缸、中压缸和低压缸三部分进行考虑。两台余热锅炉高压主蒸汽混合后进入高压缸做功，高压缸出口蒸汽与中压主蒸汽混合，再热后进入 中压缸做功；中压缸出口蒸汽与低压主蒸汽混合，进入低压缸做功。在冬季供热工况下，低压蒸汽直接进入热网，不再进入低压缸做功。
+本文将汽轮机划分为高压缸、中压缸和低压缸三部分进行考虑。两台余热锅炉高压主蒸汽混合后进入高压缸做功，高压缸出口蒸汽与中压主蒸汽混合，再热后进入中压缸做功；中压缸出口蒸汽与低压主蒸汽混合，进入低压缸做功。在冬季供热工况下，低压蒸汽直接进入热网，不再进入低压缸做功。
 
 对于任一汽轮机缸 $k$，入口状态记为 $\mathcal{F}_{k,\mathrm{in}}$，实际出口状态记为 $\mathcal{F}_{k,\mathrm{out}}$。等熵出口状态记为 $\mathcal{F}_{k,s}$，其定义为
-\[
+\begin{equation}\label{eq:st-isentropic-state}
 P_{k,s}=P_{k,\mathrm{out}},
 \qquad
 s_{k,s}=s_{k,\mathrm{in}}.
-\]
+\end{equation}
 并得到等熵出口比焓 $h_{k,s}$。
 
-汽轮机缸实际比功为
-\[
-w_k
-=
-h_{k,\mathrm{in}}
--
-h_{k,\mathrm{out}}.
-\]
-对应输出功率为
-\[
+在稳态无泄漏近似下 $\dot{m}_{k,\mathrm{out}}\approx \dot{m}_{k,\mathrm{in}}$，汽轮机缸输出功率为
+\begin{equation}\label{eq:st-cylinder-power}
 \dot{W}_{k}
 =
-\dot{m}_{k,\mathrm{out}}
+\dot{m}_{k,\mathrm{in}}
 \left(
 h_{k,\mathrm{in}}
 -
 h_{k,\mathrm{out}}
 \right).
-\]
-在稳态无泄漏近似下，$\dot{m}_{k,\mathrm{out}}\approx \dot{m}_{k,\mathrm{in}}$。汽轮机等熵效率定义为实际焓降与等熵焓降之比：
-\[
+\end{equation}
+汽轮机等熵效率定义为实际焓降与等熵焓降之比：
+\begin{equation}\label{eq:st-isentropic-eff}
 \eta_{k,s}
 =
 \frac{
@@ -144,10 +121,10 @@ h_{k,\mathrm{in}}-h_{k,\mathrm{out}}
 }{
 h_{k,\mathrm{in}}-h_{k,s}
 }.
-\]
+\end{equation}
 
 汽轮机功率计算值由各缸输出功率相加得到：
-\[
+\begin{equation}\label{eq:st-total-power}
 \dot{W}_{\mathrm{ST,cal}}
 =
 \dot{W}_{\mathrm{HP}}
@@ -155,17 +132,9 @@ h_{k,\mathrm{in}}-h_{k,s}
 \dot{W}_{\mathrm{IP}}
 +
 \dot{W}_{\mathrm{LP}}.
-\]
-当低压缸进口压力低于设定阈值时，程序将该工况识别为低压缸切缸状态，此时总功率只包括高压缸和中压缸：
-\[
-\dot{W}_{\mathrm{ST,cal}}
-=
-\dot{W}_{\mathrm{HP}}
-+
-\dot{W}_{\mathrm{IP}}.
-\]
-汽轮机总体等熵效率采用实测汽轮机功率与各缸理想等熵功率之和的比值表示：
-\[
+\end{equation}
+当低压缸进口压力低于设定阈值时，程序将该工况识别为低压缸切缸状态，此时 $\dot{W}_{\mathrm{LP}}=0$。汽轮机总体等熵效率采用实测汽轮机功率与各缸理想等熵功率之和的比值表示：
+\begin{equation}\label{eq:st-overall-eff}
 \eta_{\mathrm{ST},s}
 =
 \frac{
@@ -177,9 +146,9 @@ h_{k,\mathrm{in}}-h_{k,s}
 +
 \dot{W}_{\mathrm{LP},s}
 },
-\]
+\end{equation}
 其中，各缸理想等熵功率为
-\[
+\begin{equation}\label{eq:st-isentropic-power}
 \dot{W}_{k,s}
 =
 \dot{m}_{k,\mathrm{in}}
@@ -188,36 +157,28 @@ h_{k,\mathrm{in}}
 -
 h_{k,s}
 \right).
-\]
+\end{equation}
 
 \section{凝汽器、泵和辅助部件的建模方法}
 
 凝汽器用于将低压缸排汽凝结为凝结水，并将蒸汽余热排向冷端。本文程序将凝汽器视为一个单入口、单出口设备，入口为低压缸出口，出口为凝汽器出口。凝汽器放热功率由入口和出口焓流率之差计算：
-\[
+\begin{equation}\label{eq:condenser-heat}
 \dot{Q}_{\mathrm{cond}}
 =
 \dot{m}_{\mathrm{cond,in}}h_{\mathrm{cond,in}}
 -
 \dot{m}_{\mathrm{cond,out}}h_{\mathrm{cond,out}}.
-\]
+\end{equation}
 该指标反映低压缸排汽在凝汽器中的冷凝放热量，同时也影响凝汽器真空和低压缸排汽状态。
 
 泵模型用于描述凝结水泵、高压给水泵和中压给水泵等加压设备。对于任一泵 $p$，入口状态记为 $\mathcal{F}_{p,\mathrm{in}}$，实际出口状态记为 $\mathcal{F}_{p,\mathrm{out}}$。等熵出口状态 $\mathcal{F}_{p,s}$ 满足
-\[
+\begin{equation}\label{eq:pump-isentropic-state}
 P_{p,s}=P_{p,\mathrm{out}},
 \qquad
 s_{p,s}=s_{p,\mathrm{in}}.
-\]
-泵实际比功为
-\[
-w_p
-=
-h_{p,\mathrm{out}}
--
-h_{p,\mathrm{in}},
-\]
-输入功率为
-\[
+\end{equation}
+泵输入功率为
+\begin{equation}\label{eq:pump-power}
 \dot{W}_{p}
 =
 \dot{m}_{p,\mathrm{out}}
@@ -226,9 +187,9 @@ h_{p,\mathrm{out}}
 -
 h_{p,\mathrm{in}}
 \right).
-\]
+\end{equation}
 泵等熵效率定义为等熵压缩比焓升与实际比焓升之比：
-\[
+\begin{equation}\label{eq:pump-isentropic-eff}
 \eta_{p,s}
 =
 \frac{
@@ -236,45 +197,162 @@ h_{p,s}-h_{p,\mathrm{in}}
 }{
 h_{p,\mathrm{out}}-h_{p,\mathrm{in}}
 }.
-\]
+\end{equation}
 
-节流阀主要用于描述低压汽包给水调节阀等节流过程。程序计算节流阀压力降和比焓变化：
-\[
-\Delta P_{\mathrm{tv}}
-=
-P_{\mathrm{in}}-P_{\mathrm{out}},
-\]
-\[
-\Delta h_{\mathrm{tv}}
-=
-h_{\mathrm{out}}-h_{\mathrm{in}}.
-\]
-理想绝热节流过程中比焓近似不变，因此 $\Delta h_{\mathrm{tv}}$ 可用于检查测点和流股构造的一致性。
+节流阀主要用于描述低压汽包给水调节阀等节流过程。理想绝热节流过程中比焓近似不变，程序通过比较节流前后比焓变化检查测点和流股构造的一致性。
 
-混合器用于描述多股汽水流股混合过程，主要包括各股蒸汽合并，以及减温器冷却等。混合过程质量和能量守恒，但存在混合火用损失。
-
-\[
+混合器用于描述多股汽水流股混合过程，主要包括各股蒸汽合并以及减温器冷却等。混合过程满足质量守恒和能量守恒：
+\begin{equation}\label{eq:mixer-balance}
 \dot{m}_{m,\mathrm{out}}
 =
 \sum_{i\in\mathcal{F}_{m,\mathrm{in}}}
-\dot{m}_i .
-\]
-
-\[
+\dot{m}_i,
+\qquad
 \sum_{i\in\mathcal{F}_{m,\mathrm{in}}}
 \dot{m}_i h_i
 =
-\dot{m}_{m,\mathrm{out}}h_{m,\mathrm{out}} .
-\]
-
-\[
+\dot{m}_{m,\mathrm{out}}h_{m,\mathrm{out}},
+\end{equation}
+式中，$\mathcal{F}_{m,\mathrm{in}}$ 为混合器入口流股集合，下标 $m,\mathrm{out}$ 表示混合器出口。混合过程的㶲损失为
+\begin{equation}\label{eq:mixer-exergy-loss}
 \dot{E}_{x,\mathrm{dest},m}
 =
 \sum_{i\in\mathcal{F}_{m,\mathrm{in}}}
 \dot{m}_i e_{x,i}
 -
-\dot{m}_{m,\mathrm{out}}e_{x,m,\mathrm{out}} .
-\]
+\dot{m}_{m,\mathrm{out}}e_{x,m,\mathrm{out}}.
+\end{equation}
 
 \section{汽水侧性能分析}
 
+基于上述余热锅炉和汽轮机模型，本文对汽水侧系统进行逐点性能计算，重点分析余热锅炉烟气侧能量释放、水侧吸热分配、汽轮机出力计算精度、各缸出力分配以及汽轮机效率随负荷变化规律。汽水侧系统处于燃气轮机和用户热负荷之间，其性能不仅决定排气余热能否被充分回收，也影响联合循环机组在发电工况和供热工况下的能量分配方式。因此，本节将运行工况划分、图表结果和设备物理过程结合起来，对汽水侧模型计算结果进行说明。
+
+\subsection{余热锅炉烟气侧能量分配}
+
+图~\ref{fig:chapter4-flue-gas-energy-distribution} 给出了余热锅炉烟气侧能量分配结果。由图可见，样本点随机组总出力大致分布在几个典型工况区间内：75MW至100MW的低出力区间主要对应一拖一工况，即仅有一台燃气轮机和一台余热锅炉投入运行，无供热；100MW至125MW的中等出力区间多对应二拖一供热工况，此时两台燃气轮机均投入运行，全部低压蒸汽进入热网供热，汽轮机出力相对受限；125MW至150MW区间样本点稀疏，通常反映机组处于负荷切换、供热边界变化或运行样本数量较少的过渡状态；最高出力区间主要对应二拖一非供热或低供热工况，燃气轮机排气能量和汽轮机发电出力均处于较高水平。
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.8\textwidth]{chapter4/1烟气能量分配.png}
+  \caption{余热锅炉烟气侧能量分配}
+  \label{fig:chapter4-flue-gas-energy-distribution}
+\end{figure}
+
+图~\ref{fig:chapter4-flue-gas-energy-share} 进一步给出了烟气侧能量累计占比。图中最下方区域表示余热锅炉出口尾气损失占比，中间区域表示汽机发电的占比，最上方区域表示凝汽器放热和热网供热的占比。由图可见，余热锅炉出口尾气损失占比整体较低，但随着汽机出力升高有所增大，这可能是由于高负荷工况下余热锅炉烟气流量增大，而换热能力有限所致。凝汽器放热和热网供热占比显著下降，说明高参数运行可以有效降低凝汽器侧能量损失。该比例变化反映了汽水侧在发电输出和供热输出之间的能量分配特征。
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.8\textwidth]{chapter4/1-1烟气能量占比.png}
+  \caption{余热锅炉烟气侧能量占比}
+  \label{fig:chapter4-flue-gas-energy-share}
+\end{figure}
+
+\FloatBarrier
+
+\subsection{余热锅炉水侧吸热分配}
+
+图~\ref{fig:chapter4-hrsg1-heat-absorption} 和图~\ref{fig:chapter4-hrsg2-heat-absorption} 给出了余热锅炉水侧吸热分配结果。不同压力等级蒸汽的吸热量随机组出力提高而增加，基本呈现线性关系。这可能是因为各个等级蒸汽的压力和吸热温度基本保持不变，但给水流量随机组出力增大而线性增加。在冬季供热工况下，各股蒸汽的吸热量均略高于非供热工况和低供热工况，说明为同时满足供热需求和发电需求，余热锅炉需要提供更多的蒸汽量，吸收更多烟气热量。
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.8\textwidth]{chapter4/2HRSG1吸热分配.png}
+  \caption{\#1 余热锅炉水侧吸热分配}
+  \label{fig:chapter4-hrsg1-heat-absorption}
+\end{figure}
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.8\textwidth]{chapter4/2HRSG2吸热分配.png}
+  \caption{\#2 余热锅炉水侧吸热分配}
+  \label{fig:chapter4-hrsg2-heat-absorption}
+\end{figure}
+
+\FloatBarrier
+
+图~\ref{fig:chapter4-hrsg1-heat-share} 和图~\ref{fig:chapter4-hrsg2-heat-share} 表明，高压主蒸汽吸热占比在两台余热锅炉中均保持在较高水平，约为 $0.56$--$0.64$，是水侧吸热的主要组成部分，且随汽机出力升高而略有下降；中压和再热吸热占比约为 $0.22$--$0.30$，在高负荷区间略有下降；低压主蒸汽吸热占比约为 $0.12$--$0.18$，在高负荷区间显著上升。该结果说明，高压主蒸汽系统是余热锅炉水侧吸热的核心，应该重点关注其换热能力的变化。同时在高负荷运行时，低压侧换热能力升高。这可能是因为在高负荷工况下，低压省煤器吸热温度升高，低压给水同时中压和高压主蒸汽提供给水，其流量显著增加，且增大幅度高于中压和高压给水流量。因此在高负荷运行工况下，应该给予低压侧换热能力更多关注，以保证其能够满足高负荷工况下的蒸汽产量需求。
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.8\textwidth]{chapter4/2-1HRSG1吸热占比.png}
+  \caption{\#1 余热锅炉水侧吸热占比}
+  \label{fig:chapter4-hrsg1-heat-share}
+\end{figure}
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.8\textwidth]{chapter4/2-1HRSG2吸热占比.png}
+  \caption{\#2 余热锅炉水侧吸热占比}
+  \label{fig:chapter4-hrsg2-heat-share}
+\end{figure}
+
+\FloatBarrier
+
+\subsection{汽轮机出力计算}
+
+图~\ref{fig:chapter4-steam-turbine-output} 给出了修正后的汽轮机出力计算结果。汽轮机出力由高压缸、中压缸和低压缸的焓降功率叠加得到，并与实测汽轮机发电功率进行对比。整体来看，计算结果能够较好跟随实测出力变化，说明基于实测蒸汽压力、温度和流量构造的汽轮机模型具有较好的工程适用性。其原始计算结果略高于实测值，可能是由于轴封抽汽难以统计，且机械效率难以确定导致的。通过整体平移使得大部分计算值与实测值完全对应。部分偏离实测值的点误差主要来源于低压缸前的热网抽汽。在热网抽汽流量较低的情况下，该流量低于阀门最低的测量范围，导致热网抽汽没有被计入低压缸流量，导致最终计算出力偏高。结合图~\ref{fig:chapter4-steam-turbine-output} 也可以看出计算处理均高于实测值，这与分析相符。
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.8\textwidth]{chapter4/3汽机出力计算.png}
+  \caption{汽轮机出力计算结果}
+  \label{fig:chapter4-steam-turbine-output}
+\end{figure}
+
+\FloatBarrier
+
+\subsection{汽轮机各缸出力分配}
+
+图~\ref{fig:chapter4-cylinder-output-distribution} 展示了汽轮机各缸出力分配规律。高压缸出力主要由高压主蒸汽流量、主蒸汽压力温度和排汽压力决定，随余热锅炉高压蒸汽产量增加而上升；中压缸出力受再热蒸汽参数和中压补汽影响，在二拖一高负荷工况下贡献较为稳定；低压缸出力对低压蒸汽流量、凝汽器压力和供热抽汽方式更加敏感，因此在供热工况下可能出现下降或波动。按照汽轮机总功率可将图中工况大致划分为 $75$--$100$ MW、$125$--$150$ MW 和 $175$--$250$ MW 三个典型区间。$75$--$100$ MW 区间主要对应单燃机低负荷、少供热工况，高压缸和中压缸出力水平较低，低压缸有效样本相对较少，说明部分工况存在低压缸切缸或低压通流不足。$125$--$150$ MW 区间主要对应二拖一供热工况，供热抽汽使进入低压缸继续膨胀做功的蒸汽量减少，低压缸出力和出力占比明显降低。$175$--$250$ MW 区间则主要对应二拖一高发电、少供热工况，低压缸通流量显著增加，低压缸出力成为汽轮机总出力的重要组成部分。
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.8\textwidth]{chapter4/4各缸出力分配.png}
+  \caption{汽轮机各缸出力分配}
+  \label{fig:chapter4-cylinder-output-distribution}
+\end{figure}
+
+图~\ref{fig:chapter4-cylinder-output-share} 从相对比例角度展示了各缸对汽轮机总出力的贡献。高压缸出力占比约为 $0.16$--$0.30$，在较高汽轮机总功率区间逐渐稳定在 $0.20$ 左右；中压缸出力占比由中间累计边界与高压边界之差表示，在多数高负荷工况下约为 $0.33$--$0.35$；低压缸出力占比在非供热高负荷工况下约为 $0.45$ 左右，是出力的主要来源。而在供热工况下占比显著降低，在 $125$--$150$ MW 区间低压缸出力占比约为 $0.23$，明显低于高发电工况。这表明低压工质虽然品位较低，但是流量大，在供热工况承担了重要的供热任务，在非供热状态下承担了接近一半的发电出力需求，不能忽视其重要影响。同时，各缸出力占比的变化也说明汽轮机总功率并不能单独表征汽轮机内部做功分配，供热抽汽和低压缸投入状态会显著改变高、中、低压缸之间的功率分配关系。
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.8\textwidth]{chapter4/4-1各缸出力占比.png}
+  \caption{汽轮机各缸出力占比}
+  \label{fig:chapter4-cylinder-output-share}
+\end{figure}
+
+\FloatBarrier
+
+\subsection{汽轮机效率分析}
+
+图~\ref{fig:chapter4-hp-cylinder-efficiency}、图~\ref{fig:chapter4-ip-cylinder-efficiency} 和图~\ref{fig:chapter4-lp-cylinder-efficiency} 给出了汽轮机各缸效率随汽机出力的变化。需要指出的是，汽轮机效率随出力变化并非单调关系，而是受到供热方式、低压缸是否投入、凝汽器背压和主再热蒸汽参数共同影响。按汽轮机总功率分区来看，$75$--$100$ MW 区间主要为单燃机低负荷工况，高压缸和中压缸等熵效率分别约为 $0.59$ 和 $0.66$，明显低于二拖一工况，说明低负荷下主蒸汽和再热蒸汽流量较小，汽轮机偏离设计通流状态，阀门节流、漏汽和相对散热损失占比增大。在该区间内，高压缸效率又呈现先升高后降低的局部变化：当汽轮机功率由 $75$ MW 增加至约 $90$ MW 时，高压主蒸汽流量增加，高压缸逐渐脱离小流量运行状态，通流条件改善，效率随之升高；当功率继续接近 $100$ MW 时，供热抽汽和运行方式切换影响增强，高压缸排汽压力升高，再热侧边界条件发生变化，使高压缸偏离该区间内的局部最佳膨胀状态，因此效率有所下降。
+
+$125$--$150$ MW 区间主要对应二拖一强供热工况，高压缸和中压缸等熵效率分别约为 $0.82$ 和 $0.84$，较低负荷区间明显提高。这说明双燃机运行后主蒸汽和再热蒸汽参数更加稳定，高、中压缸通流条件改善。但由于大量蒸汽被供热系统抽出，进入低压缸继续膨胀做功的蒸汽量减少，低压缸出力占比降低，汽轮机内部能量分配由纯发电向热电联供转移。$175$--$250$ MW 区间则主要对应二拖一高发电、少供热工况，高压缸和中压缸效率分别稳定在约 $0.81$ 和 $0.83$，低压缸出力占比提高至约 $0.45$。但低压缸效率在该区间约为 $0.79$，低于前两个区间，说明高发电工况下低压缸主要依靠大流量低品位蒸汽贡献出力，其效率更容易受到排汽压力、凝汽器背压、湿蒸汽区膨胀和末级通流损失影响。总体来看，各缸效率变化反映的是负荷、供热抽汽和蒸汽边界条件共同作用的结果，不能仅用汽轮机总功率单一变量解释。
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.8\textwidth]{chapter4/5高压缸效率.png}
+  \caption{高压缸效率随出力变化}
+  \label{fig:chapter4-hp-cylinder-efficiency}
+\end{figure}
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.8\textwidth]{chapter4/5中压缸效率.png}
+  \caption{中压缸效率随出力变化}
+  \label{fig:chapter4-ip-cylinder-efficiency}
+\end{figure}
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.8\textwidth]{chapter4/5低压缸效率.png}
+  \caption{低压缸效率随出力变化}
+  \label{fig:chapter4-lp-cylinder-efficiency}
+\end{figure}
+
+\FloatBarrier
+
+\section{本章小结}
+
+本章建立了余热锅炉和汽轮机的汽水侧性能分析模型，并基于运行数据对烟气侧能量释放、水侧吸热分配、汽轮机出力计算、各缸出力分配和汽轮机效率等指标进行了分析。
+
+烟气侧能量分析表明，燃气轮机排气余热是蒸汽循环做功和供热输出的重要来源，排烟损失占比可用于评价余热锅炉热量回收水平；水侧吸热分配结果说明，高压主蒸汽和中压再热系统承担主要吸热份额，是底循环发电能力的关键支撑；汽轮机各缸出力及其占比变化反映了蒸汽能量在高压缸、中压缸、低压缸以及供热侧之间的分配关系。上述分析表明，汽水侧性能不仅受汽轮机总负荷影响，也与余热锅炉换热能力、蒸汽压力等级、供热抽汽方式和低压缸通流状态密切相关，为第 5 章联合循环整体效率影响因素分析提供了汽水侧边界和物理解释基础。

@@ -1,0 +1,325 @@
+[
+  {
+    "varname": "SKY.GTCC.NLXL_100",
+    "meaning": "联合循环能量效率",
+    "source_metric": "PLANT.联合循环能量效率"
+  },
+  {
+    "varname": "SKY.GTCC.FDXL_100",
+    "meaning": "联合循环发电效率",
+    "source_metric": "PLANT.联合循环发电效率"
+  },
+  {
+    "varname": "SKY.GTCC.YXL_100",
+    "meaning": "联合循环㶲效率",
+    "source_metric": "PLANT.联合循环㶲效率"
+  },
+  {
+    "varname": "SKY.GTCC.RH_MW",
+    "meaning": "联合循环燃料热输入/热耗",
+    "source_metric": "PLANT.热耗"
+  },
+  {
+    "varname": "SKY.GT1.RXL_100",
+    "meaning": "#1燃机热效率",
+    "source_metric": "GT1.燃机热效率"
+  },
+  {
+    "varname": "SKY.GT1.CMP.DSXL_100",
+    "meaning": "#1燃机压气机等熵效率",
+    "source_metric": "GT1.压气机等熵效率"
+  },
+  {
+    "varname": "SKY.GT1.CMP.HG_MW",
+    "meaning": "#1燃机压气机耗功",
+    "source_metric": "GT1.压气机耗功"
+  },
+  {
+    "varname": "SKY.GT1.COMB.T3_K",
+    "meaning": "#1燃机燃烧室燃烧温度",
+    "source_metric": "GT1.燃烧室温度"
+  },
+  {
+    "varname": "SKY.GT1.RH_MW",
+    "meaning": "#1燃机燃料热输入/热耗",
+    "source_metric": "GT1.燃料能量"
+  },
+  {
+    "varname": "SKY.GT1.TURB.DSXL_100",
+    "meaning": "#1燃机透平等熵效率",
+    "source_metric": "GT1.透平等熵效率"
+  },
+  {
+    "varname": "SKY.GT1.TURB.YXL_100",
+    "meaning": "#1燃机透平㶲效率",
+    "source_metric": "GT1.透平㶲效率"
+  },
+  {
+    "varname": "SKY.GT1.TURB.ZG_MW",
+    "meaning": "#1燃机透平做功",
+    "source_metric": "GT1.透平输出功"
+  },
+  {
+    "varname": "SKY.GT1.CMP.DSSS_MW",
+    "meaning": "#1燃机压气机等熵损失",
+    "source_metric": "GT1.压气机等熵损失"
+  },
+  {
+    "varname": "SKY.GT1.TURB.DSSS_MW",
+    "meaning": "#1燃机透平等熵损失",
+    "source_metric": "GT1.透平等熵损失"
+  },
+  {
+    "varname": "SKY.GT2.RXL_100",
+    "meaning": "#2燃机热效率",
+    "source_metric": "GT2.燃机热效率"
+  },
+  {
+    "varname": "SKY.GT2.CMP.DSXL_100",
+    "meaning": "#2燃机压气机等熵效率",
+    "source_metric": "GT2.压气机等熵效率"
+  },
+  {
+    "varname": "SKY.GT2.CMP.HG_MW",
+    "meaning": "#2燃机压气机耗功",
+    "source_metric": "GT2.压气机耗功"
+  },
+  {
+    "varname": "SKY.GT2.COMB.T3_K",
+    "meaning": "#2燃机燃烧室燃烧温度",
+    "source_metric": "GT2.燃烧室温度"
+  },
+  {
+    "varname": "SKY.GT2.RH_MW",
+    "meaning": "#2燃机燃料热输入/热耗",
+    "source_metric": "GT2.燃料能量"
+  },
+  {
+    "varname": "SKY.GT2.TURB.DSXL_100",
+    "meaning": "#2燃机透平等熵效率",
+    "source_metric": "GT2.透平等熵效率"
+  },
+  {
+    "varname": "SKY.GT2.TURB.YXL_100",
+    "meaning": "#2燃机透平㶲效率",
+    "source_metric": "GT2.透平㶲效率"
+  },
+  {
+    "varname": "SKY.GT2.TURB.ZG_MW",
+    "meaning": "#2燃机透平做功",
+    "source_metric": "GT2.透平输出功"
+  },
+  {
+    "varname": "SKY.GT2.CMP.DSSS_MW",
+    "meaning": "#2燃机压气机等熵损失",
+    "source_metric": "GT2.压气机等熵损失"
+  },
+  {
+    "varname": "SKY.GT2.TURB.DSSS_MW",
+    "meaning": "#2燃机透平等熵损失",
+    "source_metric": "GT2.透平等熵损失"
+  },
+  {
+    "varname": "SKY.HRSG1.HRXL_100",
+    "meaning": "#1余热锅炉换热效率",
+    "source_metric": "HRSG1.余热锅炉换热效率"
+  },
+  {
+    "varname": "SKY.HRSG1.YXL_100",
+    "meaning": "#1余热锅炉㶲效率",
+    "source_metric": "HRSG1.余热锅炉㶲效率"
+  },
+  {
+    "varname": "SKY.HRSG1.HST.XRL_MW",
+    "meaning": "#1余热锅炉主蒸汽吸热功率",
+    "source_metric": "HRSG1.主蒸汽吸热功率"
+  },
+  {
+    "varname": "SKY.HRSG1.RST.XRL_MW",
+    "meaning": "#1余热锅炉再热蒸汽吸热功率",
+    "source_metric": "HRSG1.中压+再热蒸汽吸热功率"
+  },
+  {
+    "varname": "SKY.HRSG1.LST.XRL_MW",
+    "meaning": "#1余热锅炉低压主蒸汽吸热功率",
+    "source_metric": "HRSG1.低压主蒸汽功率"
+  },
+  {
+    "varname": "SKY.HRSG1.YQRL_MW",
+    "meaning": "#1余热锅炉烟气放热功率",
+    "source_metric": "HRSG1.烟气放热功率"
+  },
+  {
+    "varname": "SKY.HRSG2.HRXL_100",
+    "meaning": "#2余热锅炉换热效率",
+    "source_metric": "HRSG2.余热锅炉换热效率"
+  },
+  {
+    "varname": "SKY.HRSG2.YXL_100",
+    "meaning": "#2余热锅炉㶲效率",
+    "source_metric": "HRSG2.余热锅炉㶲效率"
+  },
+  {
+    "varname": "SKY.HRSG2.HST.XRL_MW",
+    "meaning": "#2余热锅炉主蒸汽吸热功率",
+    "source_metric": "HRSG2.主蒸汽吸热功率"
+  },
+  {
+    "varname": "SKY.HRSG2.RST.XRL_MW",
+    "meaning": "#2余热锅炉再热蒸汽吸热功率",
+    "source_metric": "HRSG2.中压+再热蒸汽吸热功率"
+  },
+  {
+    "varname": "SKY.HRSG2.LST.XRL_MW",
+    "meaning": "#2余热锅炉低压主蒸汽吸热功率",
+    "source_metric": "HRSG2.低压主蒸汽功率"
+  },
+  {
+    "varname": "SKY.HRSG2.YQRL_MW",
+    "meaning": "#2余热锅炉烟气放热功率",
+    "source_metric": "HRSG2.烟气放热功率"
+  },
+  {
+    "varname": "SKY.HRSG1.GYZFQ.HRXL_100",
+    "meaning": "#1余热锅炉高压蒸发器换热效率",
+    "source_metric": null
+  },
+  {
+    "varname": "SKY.HRSG1.GYZFQ.HRWC",
+    "meaning": "#1余热锅炉高压蒸发器换热温差",
+    "source_metric": null
+  },
+  {
+    "varname": "SKY.HRSG1.GYZFQ.XRGL",
+    "meaning": "#1余热锅炉高压蒸发器吸热功率",
+    "source_metric": null
+  },
+  {
+    "varname": "SKY.HRSG1.GYZFQ.HRXN",
+    "meaning": "#1余热锅炉高压蒸发器换热性能系数",
+    "source_metric": null
+  },
+  {
+    "varname": "SKY.HRSG1.ZYZFQ.HRXL_100",
+    "meaning": "#1余热锅炉中压蒸发器换热效率",
+    "source_metric": null
+  },
+  {
+    "varname": "SKY.HRSG1.ZYZFQ.HRWC",
+    "meaning": "#1余热锅炉中压蒸发器换热温差",
+    "source_metric": null
+  },
+  {
+    "varname": "SKY.HRSG1.ZYZFQ.XRGL",
+    "meaning": "#1余热锅炉中压蒸发器吸热功率",
+    "source_metric": null
+  },
+  {
+    "varname": "SKY.HRSG1.ZYZFQ.HRXN",
+    "meaning": "#1余热锅炉中压蒸发器换热性能系数",
+    "source_metric": null
+  },
+  {
+    "varname": "SKY.HRSG2.GYZFQ.HRXL_100",
+    "meaning": "#2余热锅炉高压蒸发器换热效率",
+    "source_metric": null
+  },
+  {
+    "varname": "SKY.HRSG2.GYZFQ.HRWC",
+    "meaning": "#2余热锅炉高压蒸发器换热温差",
+    "source_metric": null
+  },
+  {
+    "varname": "SKY.HRSG2.GYZFQ.XRGL",
+    "meaning": "#2余热锅炉高压蒸发器吸热功率",
+    "source_metric": null
+  },
+  {
+    "varname": "SKY.HRSG2.GYZFQ.HRXN",
+    "meaning": "#2余热锅炉高压蒸发器换热性能系数",
+    "source_metric": null
+  },
+  {
+    "varname": "SKY.HRSG2.ZYZFQ.HRXL_100",
+    "meaning": "#2余热锅炉中压蒸发器换热效率",
+    "source_metric": null
+  },
+  {
+    "varname": "SKY.HRSG2.ZYZFQ.HRWC",
+    "meaning": "#2余热锅炉中压蒸发器换热温差",
+    "source_metric": null
+  },
+  {
+    "varname": "SKY.HRSG2.ZYZFQ.XRGL",
+    "meaning": "#2余热锅炉中压蒸发器吸热功率",
+    "source_metric": null
+  },
+  {
+    "varname": "SKY.HRSG2.ZYZFQ.HRXN",
+    "meaning": "#2余热锅炉中压蒸发器换热性能系数",
+    "source_metric": null
+  },
+  {
+    "varname": "SKY.ST.DSXL_100",
+    "meaning": "汽轮机整体等熵效率",
+    "source_metric": "ST.汽机总体等熵效率"
+  },
+  {
+    "varname": "SKY.ST.HST.DSXL_100",
+    "meaning": "汽轮机高压缸等熵效率",
+    "source_metric": "ST.高压缸等熵效率"
+  },
+  {
+    "varname": "SKY.ST.HST.YXL_100",
+    "meaning": "汽轮机高压缸㶲效率",
+    "source_metric": "ST.高压缸㶲效率"
+  },
+  {
+    "varname": "SKY.ST.HST.ZG_MW",
+    "meaning": "汽轮机高压缸出力",
+    "source_metric": "ST.高压缸出力"
+  },
+  {
+    "varname": "SKY.ST.HST.ZZQLL_kg_s",
+    "meaning": "汽轮机主蒸汽流量",
+    "source_metric": "ST.主蒸汽流量"
+  },
+  {
+    "varname": "SKY.ST.IST.DSXL_100",
+    "meaning": "汽轮机中压缸等熵效率",
+    "source_metric": "ST.中压缸等熵效率"
+  },
+  {
+    "varname": "SKY.ST.IST.YXL_100",
+    "meaning": "汽轮机中压缸㶲效率",
+    "source_metric": "ST.中压缸㶲效率"
+  },
+  {
+    "varname": "SKY.ST.IST.ZG_MW",
+    "meaning": "汽轮机中压缸出力",
+    "source_metric": "ST.中压缸出力"
+  },
+  {
+    "varname": "SKY.ST.IST.ZRQLL_kg_s",
+    "meaning": "汽轮机再热蒸汽流量",
+    "source_metric": "ST.再热蒸汽流量"
+  },
+  {
+    "varname": "SKY.ST.LST.DSXL_100",
+    "meaning": "汽轮机低压缸等熵效率",
+    "source_metric": "ST.低压缸等熵效率"
+  },
+  {
+    "varname": "SKY.ST.LST.YXL_100",
+    "meaning": "汽轮机低压缸㶲效率",
+    "source_metric": "ST.低压缸㶲效率"
+  },
+  {
+    "varname": "SKY.ST.LST.ZG_MW",
+    "meaning": "汽轮机低压缸出力",
+    "source_metric": [
+      "ST.低压缸出力",
+      "ST.低压缸出力（反算）"
+    ]
+  }
+]
