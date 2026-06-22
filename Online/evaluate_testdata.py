@@ -84,8 +84,7 @@ def evaluate_sample(pm, input_path):
         row = df.iloc[0]
         sample["timestamp"] = timestamp
         sample["missing_internal_fields"] = diagnostics.get("missing_internal_fields", [])
-        sample["environment_temperature_cache"] = diagnostics.get("environment_temperature_cache")
-        sample["fuel_composition_cache"] = diagnostics.get("fuel_composition_cache")
+        sample["cache_values"] = diagnostics.get("cache_values")
 
         for field in sample["missing_internal_fields"]:
             sample["factors"][f"missing_internal_field:{field}"] += 1

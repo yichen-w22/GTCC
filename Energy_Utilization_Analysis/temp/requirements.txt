@@ -1,0 +1,191 @@
+To be submitted to Journal of Research Practice
+
+Title of your research paper
+
+Terrence Goodchild1, Xialai, Liu1, Bill Gates2*
+1
+
+Department of Energy and Power Engineering, Tsinghua University, Beijing 100084, China
+2
+
+Microsoft Corporation, Redmond, WA 98052, USA
+
+Abstract
+(no more than 500 words)
+
+Keywords: (identify 5 keywords that best represent the nature of the project)
+*Corresponding Author:
+Bill Gates, Microsoft Corporation, email: bill.gates@microsoft.com, phone: 1-(206)709-3100.
+Address: One Microsoft Way, Redmond, WA 98052-7329, USA.
+
+(Length limit: 9000 words from Section 1 to 4; figures and tables shall be placed after the paragraph in
+which they are first mentioned)
+
+1
+
+1.
+
+Introduction
+(Background of applications and demands in the relevant area; review of relevant literature;
+
+motivation and objective. The order of the paragraph shall be logical, from broad to narrow. The
+sentences within a paragraph shall be cohesive. The entire section is supposed to deliver a complete
+story, from the overall background to specific topic of your focus.)
+
+2.
+
+Methods (create your own heading surrounding the methods)
+
+2.1.
+
+Create your own sub-heading
+(Describe the details of your research methods with necessary figures. You are also
+
+recommended to use a table to summarize the test conditions or models if that makes them clear. It is
+also fine that this section is organized without sub-heading structure. It is your choice.)
+
+2.2.
+
+Create your own sub-heading
+
+Figure 1 shows…
+As shown in Fig. 2, …
+(figures and tables are placed around the text; detailed format are shown below)
+
+2
+
+Fig. 1. Clearly summarizes the contents of the figure. Define figure symbols and curves either in a
+legend in the figure itself or in the caption. Label subfigures (a), (b), etc., and include a description of
+each panel given in the caption.
+
+(a)
+
+(b)
+
+Fig. 2. Another example figure: (a) Description of a. (b) Description of b.
+
+3
+
+Table 1. Clearly summarizes the contents of the table. Use symbols instead of full physical terminology
+in the table, e.g. Re instead of Reynolds number. You can define them in the table caption.
+v (m/s)
+1
+2
+2.5
+3
+
+Re (-)
+20
+40
+50
+60
+
+Pr (-)
+6.9
+6.9
+6.9
+6.9
+
+Nu (-)
+xx
+xx
+xx
+xx
+
+Gr (-)
+xx
+xx
+xx
+xx
+
+CD (-)
+xx
+xx
+xx
+xx
+
+3.
+
+Results and Discussions
+
+3.1.
+
+Create your own sub-heading surrounding the first topical results and their discussions
+(This section is the major part of the article. Begin with place indicators for the figure or table
+
+and start showing the results in an organized fashion. The discussion for results should reach certain
+conclusion in this section, supported by associated scientific analyses.)
+
+3.2.
+
+Create your own sub-heading
+
+3.3.
+
+Create your own sub-heading
+
+4.
+
+Conclusions (or Summary, or Concluding Remarks..)
+Here you are only allowed to summarize the concluded results from the previous section. You
+
+can briefly begin from the motivation, methods, and test conditions that were successfully pursued in
+this study and then form one or multiple paragraphs to highlight the conclusions. Sometimes bullet
+points consisting of complete sentences are also acceptable. It is your choice.
+
+Acknowledgment
+This is the place to express gratitude to various funding agencies that support this work. People
+who assisted with particular technical issues and discussions should be explicitly mentioned with job
+titles and affiliations. The acknowledgment should be sincere and serious and based on facts.
+4
+
+References
+The references should be organized using the order of their first appearance in this paper. Formats for
+various sources of literature are listed below.
+Journal article:
+[1] A.L. Sánchez, E. Fernárdez-Tarrazo, F.A. Williams, The chemistry involved in the third explosion
+limit of H H2O2 mixtures, Combust. Flame 161 (2014) 111-117.
+Journal article in press:
+[2] H. Terashima, M. Koshi, Mechanisms of strong wave generation in end-gas autoignition during
+knocking combustion, Combust. Flame (2014), https://doi.org/10.1016/j.combustflame.2014.12.013.
+Book:
+[3] P. Prasad, Propagation of a curved shock and nonlinear ray theory, Longman Scientific &
+Technical, Harlow, U.K., 1993. You may also include the page or page range (optional).
+Reference to a chapter in an Edited Book:
+[4] G.R. Mettam, L.B. Adams, How to prepare an electronic version of your article, in: B.S. Jones,
+R.Z. Smith (Eds.), Introduction to the Electronic Age, E-Publishing Inc., New York, 2009, pp. 281304.
+Symposium Proceedings:
+All symposium papers associated with the International Symposium on Combustion published before
+2000 should be cited in the following way:
+[5] Y. Ju, G. Masuya, P.D. Ronney, Effects of radiative emission and absorption on the propagation
+and extinction of premixed gas flames, Symp. (Int.) Combust. 27 (1998) 2619-2626.
+All symposium papers associated with the International Symposium on Combustion published in
+2000 or later should be cited in the following way:
+[6] A. Attili, F. Bisetti, M.E. Mueller, H. Pitsch, Damköhler number effects on soot formation and
+growth in turbulent premixed flames, Proc. Combust. Inst. 35 (2015) 1215-1223.
+Conference Proceedings
+A conference proceedings should be styled as a book, with publisher or institution sponsoring
+publication and the year published as well as the year the conference was held. Authors must ensure
+that these references are publicly available. Example:
+[7] R. Tangko, D.A. Sheen, H. Wang, Combustion kinetic modeling using multispecies time-histories
+in shock-tube oxidation of n-dodecane, 7th U.S. National Combustion Meeting (2011), paper 2A18.
+Internal Reports:
+[8] A.S. Johnson, F.W. Adams, Use of laser diagnostics in supersonic flows, Report No. SAND878003, Sandia National Laboratories, Livermore, CA, USA, 1987. Authors must ensure that these
+references are publicly available.
+Journal abbreviations sources:
+Journal names should be abbreviated according to the List of Title Word Abbreviations link:
+http://www.issn.org/services/online-services/access-to-the-ltwa/
+or alternatively the Journal Titles and Abbreviations link:
+http://www.pg.gda.pl/chem/Dydaktyka/Analityczna/MISC/Journal_Titles_and_%20Abbreviations.ht
+m
+
+5
+
+Appendix
+Appendix I. The title for this appendix
+Content of the appendix. You can place additional figures, texts, or more detailed derivations here if
+they exceed the word limit in the main text.
+
+6
+
+

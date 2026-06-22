@@ -14,7 +14,7 @@ sys.path.insert(0, str(ONLINE_ROOT / "data_precessing"))
 from online_input import canonical_name, is_missing, read_point_name_rows  # noqa: E402
 
 
-MAPPING_PATH = ONLINE_ROOT / "input" / "example" / "上线参数.xlsx"
+MAPPING_PATH = ONLINE_ROOT / "input" / "example" / "input_parameter.xlsx"
 SOURCE_CSV = ROOT / "datareader_new" / "jqrd" / "outcome" / "上线选取参数_1min.csv"
 FALLBACK_SOURCE_PKL = ROOT / "datareader_new" / "jqrd" / "outcome" / "jqrd全场参数_1min.pkl"
 OUT_DIR = ONLINE_ROOT / "input" / "test"

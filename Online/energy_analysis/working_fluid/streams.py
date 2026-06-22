@@ -8,8 +8,8 @@ from energy_analysis.working_fluid.gas import (
 from energy_analysis.working_fluid.steam_water import WaterSteamState, create_water_reference_env
 
 
-DEFAULT_ENVIRONMENT_T = 298.15
 MIN_WATER_REF_T = 273.15
+GT_POWER_STOP_THRESHOLD = 10_000_000.0
 
 
 def _is_missing(value):
@@ -21,36 +21,25 @@ def _is_missing(value):
         return False
 
 
-def _first_valid(row, *keys, default=None):
-    for key in keys:
-        value = row[key]
-        if not _is_missing(value):
-            return value
-    return default
-
-
-def _unit_temperature(row, key_template, unit, default=DEFAULT_ENVIRONMENT_T):
-    other_unit = 2 if unit == 1 else 1
-    return _first_valid(
-        row,
-        key_template.format(unit=unit),
-        key_template.format(unit=other_unit),
-        default=default,
-    )
-
-
 def _ambient_temperature(row, unit):
-    return _unit_temperature(row, "环境温度_{unit}", unit)
+    return row[f"环境温度_{unit}"]
 
 
 def _valid_state(state):
-    return not any(_is_missing(value) for value in (state.P, state.m_dot, state.h))
+    return (
+        not any(_is_missing(value) for value in (state.P, state.m_dot, state.h))
+        and state.m_dot > 0
+    )
+
+
+def _is_unit_running(row, unit):
+    power = row.get(f"燃机出力_{unit}")
+    return not _is_missing(power) and power > GT_POWER_STOP_THRESHOLD
 
 
 def build_streams_from_row(df, idx):
 
     LP_Turbine_Exhaust_Steam_Quality = 0.97
-    GT_STOP_FLUE_GAS_FLOW = 10.0
 
     """
     从 df 第 idx 行构造全场流股字典。
@@ -59,19 +48,23 @@ def build_streams_from_row(df, idx):
     """
     row = df.iloc[idx]
     streams = {}
+
     unit_running = {
-        1: row["燃料质量流量_1"] + row["燃机进口空气流量_1"] > GT_STOP_FLUE_GAS_FLOW,
-        2: row["燃料质量流量_2"] + row["燃机进口空气流量_2"] > GT_STOP_FLUE_GAS_FLOW,
+        1: _is_unit_running(row, 1),
+        2: _is_unit_running(row, 2),
     }
 
     def mix_streams(source_keys, output_key):
-        sources = [
+        running_sources = [
             streams[key]
             for unit, key in source_keys
-            if unit_running[unit] and _valid_state(streams[key])
+            if unit_running[unit]
         ]
-        if not sources:
+        if not running_sources:
             return WaterSteamState(name=output_key)
+        if any(not _valid_state(source) for source in running_sources):
+            return WaterSteamState(name=output_key)
+        sources = running_sources
         m_mix = sum(source.m_dot for source in sources)
         h_mix = sum(source.m_dot * source.h for source in sources) / m_mix
         P_mix = min(source.P for source in sources)
@@ -287,12 +280,20 @@ def build_streams_from_row(df, idx):
         name="中压缸出口"
     )
 
-    lp_steam_sources = [
+    running_lp_steam_sources = [
         streams[f"{unit}号炉低压主蒸汽"].m_dot
         for unit in (1, 2)
-        if unit_running[unit] and not _is_missing(streams[f"{unit}号炉低压主蒸汽"].m_dot)
+        if unit_running[unit]
     ]
-    m_lp = None if _is_missing(m_mix) or _is_missing(row["热网抽汽流量"]) else m_mix + sum(lp_steam_sources) - row["热网抽汽流量"]
+    m_lp = (
+        None
+        if (
+            _is_missing(m_mix)
+            or _is_missing(row["热网抽汽流量"])
+            or any(_is_missing(m_dot) for m_dot in running_lp_steam_sources)
+        )
+        else m_mix + sum(running_lp_steam_sources) - row["热网抽汽流量"]
+    )
     streams["低压缸入口"] = WaterSteamState.from_PT(
         P=row["低压缸进汽压力"],
         T=row["低压缸进汽温度"],
@@ -350,118 +351,153 @@ def _row_value(row, *keys, default=None):
 def build_gases_from_row(df, idx):
     row = df.iloc[idx]
     gases = {}
-    ambient_t_1 = _ambient_temperature(row, 1)
-    ambient_t_2 = _ambient_temperature(row, 2)
-    fuel_t_1 = row["燃料温度_1"]
-    fuel_t_2 = row["燃料温度_2"]
-
-    corr_coff_1 = 1.6034403778 + (1.1384305006e-01) * row["燃料质量流量_1"] + (-3.9913329318e-03) * row["燃机进口空气流量_1"] + (2.7900005990e-03) * row["燃机进口空气流量_1"]/row["燃料质量流量_1"]
-    air_flow_1 = row["燃机进口空气流量_1"] * corr_coff_1
-
-    corr_coff_2 = -1.4147760372 + (3.5387273740e-01) * row["燃料质量流量_2"] + (-1.0364906629e-02) * row["燃机进口空气流量_2"] + (8.2414971724e-02) * row["燃机进口空气流量_2"]/row["燃料质量流量_2"]
-    air_flow_2 = row["燃机进口空气流量_2"] * corr_coff_2
-
-    gas_ref = create_gas_reference_env(
-        T0=(ambient_t_1 + ambient_t_2) / 2,
-        P0=(row["压气机入口压力_1"] + row["压气机入口压力_2"]) / 2
-        )
-
-    air_composition_1 = build_air_composition(T=ambient_t_1, P=row["压气机入口压力_1"], RH=row["大气相对湿度_1"])
-    air_composition_2 = build_air_composition(T=ambient_t_2, P=row["压气机入口压力_2"], RH=row["大气相对湿度_2"])
-
+    unit_running = {
+        1: _is_unit_running(row, 1),
+        2: _is_unit_running(row, 2),
+    }
     fuel_composition = GasComposition.from_dict(build_fuel_composition_from_row(df, idx))
 
-    fuel_gas_composition_1 = build_flue_gas_composition(fuel_composition, air_composition_1, m_dot_fuel=row["燃料质量流量_1"], m_dot_air=air_flow_1)
-    fuel_gas_composition_2 = build_flue_gas_composition(fuel_composition, air_composition_2, m_dot_fuel=row["燃料质量流量_2"], m_dot_air=air_flow_2)
+    def unit_gas_names(unit):
+        return {
+            f"{unit}号炉燃料": f"{unit}号炉燃料",
+            f"{unit}号燃机入口空气": f"{unit}号燃机入口空气",
+            f"{unit}号燃机压气机出口": f"{unit}号燃机压气机出口",
+            f"{unit}号余热锅炉入口烟气": f"{unit}号余热锅炉进口烟气",
+            f"{unit}号余热锅炉出口烟气": f"{unit}号余热锅炉出口烟气",
+        }
 
-    gases["1号炉燃料"] = GasState.from_TP(
-        T=fuel_t_1,
-        P=row["燃料压力_1"],   
-        m_dot=row["燃料质量流量_1"],
-        composition=fuel_composition,
-        name="1号炉燃料",
-        ref=gas_ref
-    )
+    def add_empty_unit_gases(unit):
+        for key, name in unit_gas_names(unit).items():
+            gases[key] = GasState(name=name)
 
-    gases["2号炉燃料"] = GasState.from_TP(
-        T=fuel_t_2,
-        P=row["燃料压力_2"],
-        m_dot=row["燃料质量流量_2"],
-        composition=fuel_composition,
-        name="2号炉燃料",
-        ref=gas_ref
-    )
+    def corrected_air_flow(unit):
+        fuel_flow = row.get(f"燃料质量流量_{unit}")
+        air_flow = row.get(f"燃机进口空气流量_{unit}")
+        if _is_missing(fuel_flow) or _is_missing(air_flow) or fuel_flow == 0:
+            return None
+        if unit == 1:
+            corr_coff = (
+                1.6034403778
+                + 1.1384305006e-01 * fuel_flow
+                - 3.9913329318e-03 * air_flow
+                + 2.7900005990e-03 * air_flow / fuel_flow
+            )
+        else:
+            corr_coff = (
+                -1.4147760372
+                + 3.5387273740e-01 * fuel_flow
+                - 1.0364906629e-02 * air_flow
+                + 8.2414971724e-02 * air_flow / fuel_flow
+            )
+        return air_flow * corr_coff
 
-    gases["1号燃机入口空气"] = GasState.from_TP(
-        T=ambient_t_1,
-        P=row["压气机入口压力_1"],
-        m_dot=air_flow_1,        
-        composition=air_composition_1,
-        name="1号燃机入口空气",
-        ref=gas_ref
-    )
+    required_fields_by_unit = {
+        unit: [
+            f"环境温度_{unit}",
+            f"压气机入口压力_{unit}",
+            f"大气相对湿度_{unit}",
+            f"燃料温度_{unit}",
+            f"燃料压力_{unit}",
+            f"燃料质量流量_{unit}",
+            f"燃机进口空气流量_{unit}",
+            f"压气机出口温度_{unit}",
+            f"压气机出口压力_{unit}",
+            f"进口烟温_{unit}",
+            f"进口烟压_{unit}",
+            f"排烟烟温_{unit}",
+            f"排烟烟压_{unit}",
+        ]
+        for unit in (1, 2)
+    }
 
-    gases["2号燃机入口空气"] = GasState.from_TP(
-        T=ambient_t_2,
-        P=row["压气机入口压力_2"],
-        m_dot=air_flow_2,        
-        composition=air_composition_2,
-        name="2号燃机入口空气",
-        ref=gas_ref
-    )
+    valid_ref_units = [
+        unit
+        for unit in (1, 2)
+        if (
+            unit_running[unit]
+            and not _is_missing(row.get(f"环境温度_{unit}"))
+            and not _is_missing(row.get(f"压气机入口压力_{unit}"))
+        )
+    ]
+    gas_ref = None
+    if valid_ref_units:
+        gas_ref = create_gas_reference_env(
+            T0=sum(row[f"环境温度_{unit}"] for unit in valid_ref_units) / len(valid_ref_units),
+            P0=sum(row[f"压气机入口压力_{unit}"] for unit in valid_ref_units) / len(valid_ref_units),
+        )
 
-    gases["1号燃机压气机出口"] = GasState.from_TP(
-        T=row["压气机出口温度_1"],
-        P=row["压气机出口压力_1"],
-        m_dot=air_flow_1,        
-        composition=air_composition_1,
-        name="1号燃机压气机出口",
-        ref=gas_ref
-    )
+    def add_unit_gases(unit):
+        if not unit_running[unit]:
+            add_empty_unit_gases(unit)
+            return
+        if any(_is_missing(row.get(field)) for field in required_fields_by_unit[unit]):
+            add_empty_unit_gases(unit)
+            return
 
-    gases["2号燃机压气机出口"] = GasState.from_TP(
-        T=row["压气机出口温度_2"],
-        P=row["压气机出口压力_2"],
-        m_dot=air_flow_2,        
-        composition=air_composition_2,
-        name="2号燃机压气机出口",
-        ref=gas_ref
-    )
+        air_flow = corrected_air_flow(unit)
+        if _is_missing(air_flow):
+            add_empty_unit_gases(unit)
+            return
 
-    gases["1号余热锅炉入口烟气"] = GasState.from_TP(
-        T=row["进口烟温_1"],
-        P=row["进口烟压_1"],
-        m_dot=row["燃料质量流量_1"] + air_flow_1,
-        composition=fuel_gas_composition_1,
-        name="1号余热锅炉进口烟气",
-        ref=gas_ref
-    )
+        try:
+            air_composition = build_air_composition(
+                T=row[f"环境温度_{unit}"],
+                P=row[f"压气机入口压力_{unit}"],
+                RH=row[f"大气相对湿度_{unit}"],
+            )
+            fuel_gas_composition = build_flue_gas_composition(
+                fuel_composition,
+                air_composition,
+                m_dot_fuel=row[f"燃料质量流量_{unit}"],
+                m_dot_air=air_flow,
+            )
+        except Exception:
+            add_empty_unit_gases(unit)
+            return
 
-    gases["2号余热锅炉入口烟气"] = GasState.from_TP(
-        T=row["进口烟温_2"],
-        P=row["进口烟压_2"],
-        m_dot=row["燃料质量流量_2"] + air_flow_2,
-        composition=fuel_gas_composition_2,
-        name="2号余热锅炉进口烟气",
-        ref=gas_ref
-    )
+        flue_gas_flow = row[f"燃料质量流量_{unit}"] + air_flow
+        gases[f"{unit}号炉燃料"] = GasState.from_TP(
+            T=row[f"燃料温度_{unit}"],
+            P=row[f"燃料压力_{unit}"],
+            m_dot=row[f"燃料质量流量_{unit}"],
+            composition=fuel_composition,
+            name=f"{unit}号炉燃料",
+            ref=gas_ref,
+        )
+        gases[f"{unit}号燃机入口空气"] = GasState.from_TP(
+            T=row[f"环境温度_{unit}"],
+            P=row[f"压气机入口压力_{unit}"],
+            m_dot=air_flow,
+            composition=air_composition,
+            name=f"{unit}号燃机入口空气",
+            ref=gas_ref,
+        )
+        gases[f"{unit}号燃机压气机出口"] = GasState.from_TP(
+            T=row[f"压气机出口温度_{unit}"],
+            P=row[f"压气机出口压力_{unit}"],
+            m_dot=air_flow,
+            composition=air_composition,
+            name=f"{unit}号燃机压气机出口",
+            ref=gas_ref,
+        )
+        gases[f"{unit}号余热锅炉入口烟气"] = GasState.from_TP(
+            T=row[f"进口烟温_{unit}"],
+            P=row[f"进口烟压_{unit}"],
+            m_dot=flue_gas_flow,
+            composition=fuel_gas_composition,
+            name=f"{unit}号余热锅炉进口烟气",
+            ref=gas_ref,
+        )
+        gases[f"{unit}号余热锅炉出口烟气"] = GasState.from_TP(
+            T=row[f"排烟烟温_{unit}"],
+            P=row[f"排烟烟压_{unit}"],
+            m_dot=flue_gas_flow,
+            composition=fuel_gas_composition,
+            name=f"{unit}号余热锅炉出口烟气",
+            ref=gas_ref,
+        )
 
-    gases["1号余热锅炉出口烟气"] = GasState.from_TP(
-        T=row["排烟烟温_1"],
-        P=row["排烟烟压_1"],
-        m_dot=row["燃料质量流量_1"] + air_flow_1,
-        composition=fuel_gas_composition_1,
-        name="1号余热锅炉出口烟气",
-        ref=gas_ref
-    )
-
-    gases["2号余热锅炉出口烟气"] = GasState.from_TP(
-        T=row["排烟烟温_2"],
-        P=row["排烟烟压_2"],
-        m_dot=row["燃料质量流量_2"] + air_flow_2,
-        composition=fuel_gas_composition_2,
-        name="2号余热锅炉出口烟气",
-        ref=gas_ref
-    )
+    add_unit_gases(1)
+    add_unit_gases(2)
 
     return gases

@@ -1,0 +1,132 @@
+[
+  {
+    "name": "高压缸排汽温度",
+    "initial_value": null,
+    "cached_value": 23.600006
+  },
+  {
+    "name": "热网换热量",
+    "initial_value": null,
+    "cached_value": 5.7e-44
+  },
+  {
+    "name": "环境温度_1",
+    "initial_value": 15.0,
+    "cached_value": 30.192421
+  },
+  {
+    "name": "环境温度_2",
+    "initial_value": 15.0,
+    "cached_value": 30.192421
+  },
+  {
+    "name": "大气相对湿度_1",
+    "initial_value": null,
+    "cached_value": 15.3663915
+  },
+  {
+    "name": "大气相对湿度_2",
+    "initial_value": null,
+    "cached_value": 15.3663915
+  },
+  {
+    "name": "压气机入口压力_1",
+    "initial_value": null,
+    "cached_value": 999.7975
+  },
+  {
+    "name": "压气机入口压力_2",
+    "initial_value": null,
+    "cached_value": 999.7975
+  },
+  {
+    "name": "燃料温度_1",
+    "initial_value": null,
+    "cached_value": 17.699997
+  },
+  {
+    "name": "燃料温度_2",
+    "initial_value": null,
+    "cached_value": 17.699997
+  },
+  {
+    "name": "冷凝水温度_1",
+    "initial_value": null,
+    "cached_value": 36.5
+  },
+  {
+    "name": "冷凝水温度_2",
+    "initial_value": null,
+    "cached_value": 36.5
+  },
+  {
+    "name": "热网抽汽流量",
+    "initial_value": null,
+    "cached_value": 0.0
+  },
+  {
+    "name": "低压缸进汽温度",
+    "initial_value": null,
+    "cached_value": 301.10004
+  },
+  {
+    "name": "H2",
+    "initial_value": 0.033,
+    "cached_value": 0.006
+  },
+  {
+    "name": "N2",
+    "initial_value": 2.152,
+    "cached_value": 2.152
+  },
+  {
+    "name": "CO2",
+    "initial_value": 0.3305,
+    "cached_value": 0.3305
+  },
+  {
+    "name": "CH4",
+    "initial_value": 92.85,
+    "cached_value": 92.85
+  },
+  {
+    "name": "CO",
+    "initial_value": 0.0086,
+    "cached_value": 0.0086
+  },
+  {
+    "name": "O2+Ar",
+    "initial_value": 0.065,
+    "cached_value": 0.0
+  },
+  {
+    "name": "C2H6",
+    "initial_value": 3.642,
+    "cached_value": 3.642
+  },
+  {
+    "name": "C3H8",
+    "initial_value": 0.7565,
+    "cached_value": 0.7565
+  },
+  {
+    "name": "iC4H10",
+    "initial_value": 0.0212,
+    "cached_value": 0.0261
+  },
+  {
+    "name": "nC4H10",
+    "initial_value": 0.0828,
+    "cached_value": 0.0828
+  },
+  {
+    "name": "iC5H12",
+    "initial_value": 0.0249,
+    "cached_value": 0.0249
+  },
+  {
+    "name": "nC5H12",
+    "initial_value": 0.0181,
+    "cached_value": 0.0181
+  }
+]

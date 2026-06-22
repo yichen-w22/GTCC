@@ -9,20 +9,13 @@ import pandas as pd
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_EXAMPLE_DIR = PROJECT_ROOT / "input" / "example"
-DEFAULT_MAPPING_PATH = DEFAULT_EXAMPLE_DIR / "上线参数.xlsx"
+DEFAULT_MAPPING_PATH = DEFAULT_EXAMPLE_DIR / "input_parameter.xlsx"
 DEFAULT_INPUT_PATH = DEFAULT_EXAMPLE_DIR / "input.json"
-DEFAULT_FUEL_COMPOSITION_CACHE_PATH = PROJECT_ROOT / "data_precessing" / "fuel_composition_cache.json"
-DEFAULT_ENVIRONMENT_TEMPERATURE_CACHE_PATH = PROJECT_ROOT / "data_precessing" / "environment_temperature_cache.json"
-DEFAULT_RUNTIME_VALUE_CACHE_PATH = PROJECT_ROOT / "data_precessing" / "runtime_value_cache.json"
-DEFAULT_RUNTIME_CACHE_CONFIG_PATH = PROJECT_ROOT / "data_precessing" / "runtime_cache_config.json"
+DEFAULT_CACHE_VALUE_PATH = PROJECT_ROOT / "data_precessing" / "cache_values.json"
 
 P0 = 101325.0
 R_MIX = 291.972
 DEFAULT_FUEL_DENSITY = 0.764
-DEFAULT_ENVIRONMENT_TEMPERATURE = {
-    "环境温度_1": 25.0,
-    "环境温度_2": 25.0,
-}
 FUEL_COMPOSITION_COLUMNS = [
     "H2", "N2", "CO2", "CH4", "CO", "O2+Ar",
     "C2H6", "C3H8", "iC4H10", "nC4H10", "iC5H12", "nC5H12",
@@ -30,10 +23,14 @@ FUEL_COMPOSITION_COLUMNS = [
 DEFAULT_RUNTIME_CACHE_COLUMNS = [
     "高压缸排汽温度",
     "热网换热量",
+    "环境温度_1",
+    "环境温度_2",
+    "大气相对湿度_1",
+    "大气相对湿度_2",
+    "压气机入口压力_1",
+    "压气机入口压力_2",
     "燃料温度_1",
     "燃料温度_2",
-    "中压省煤器进水温度_1",
-    "中压省煤器进水温度_2",
     "冷凝水温度_1",
     "冷凝水温度_2",
     "热网抽汽流量",
@@ -52,6 +49,12 @@ DEFAULT_FUEL_COMPOSITION = {
     "nC4H10": 0.0828,
     "iC5H12": 0.0249,
     "nC5H12": 0.0181,
+}
+DEFAULT_CACHE_COLUMNS = DEFAULT_RUNTIME_CACHE_COLUMNS + FUEL_COMPOSITION_COLUMNS
+DEFAULT_CACHE_INITIAL_VALUES = {
+    **DEFAULT_FUEL_COMPOSITION,
+    "环境温度_1": 15.0,
+    "环境温度_2": 15.0,
 }
 
 
@@ -72,7 +75,6 @@ BASE_AVERAGING_GROUPS = {
     "高压主蒸汽压力_2": ["高压主蒸汽压力1", "高压主蒸汽压力2", "高压主蒸汽压力3"],
     "高压主蒸汽流量_2": ["高压主蒸汽流量1", "高压主蒸汽流量2", "高压主蒸汽流量3"],
     "中压省煤器进水压力_2": ["中压省煤器进水压力"],
-    "中压省煤器进水温度_2": ["中压省煤器进水温度"],
     "中压给水流量_2": ["中压给水流量1", "中压给水流量2", "中压给水流量3"],
     "热再热蒸汽流量_2": ["热再热蒸汽流量1", "热再热蒸汽流量2", "热再热蒸汽流量3"],
     "热再热蒸汽温度_2": ["热再热蒸汽温度1", "热再热蒸汽温度2", "热再热蒸汽温度3"],
@@ -105,7 +107,6 @@ BASE_AVERAGING_GROUPS = {
     "高压主蒸汽压力_1": ["高压主蒸汽压力1.1", "高压主蒸汽压力2.1", "高压主蒸汽压力3.1"],
     "高压主蒸汽流量_1": ["高压主蒸汽流量1.1", "高压主蒸汽流量2.1", "高压主蒸汽流量3.1"],
     "中压省煤器进水压力_1": ["中压省煤器进水压力.1"],
-    "中压省煤器进水温度_1": ["中压省煤器进水温度.1"],
     "中压给水流量_1": ["中压给水流量1.1", "中压给水流量2.1", "中压给水流量3.1"],
     "热再热蒸汽流量_1": ["热再热蒸汽流量1.1", "热再热蒸汽流量2.1", "热再热蒸汽流量3.1"],
     "热再热蒸汽温度_1": ["热再热蒸汽温度1.1", "热再热蒸汽温度2.1", "热再热蒸汽温度3.1"],
@@ -159,10 +160,10 @@ PRESSURE_MPA_COLUMNS = [
 
 TEMPERATURE_COLUMNS = [
     "高压省煤器进水温度_2", "高压主蒸汽温度_2",
-    "中压省煤器进水温度_2", "热再热蒸汽温度_2", "低压省煤器出水温度_2",
+    "热再热蒸汽温度_2", "低压省煤器出水温度_2",
     "低压主蒸汽温度_2", "冷凝水温度_2", "进口烟温_2", "排烟烟温_2",
     "高压省煤器进水温度_1", "高压主蒸汽温度_1",
-    "中压省煤器进水温度_1", "热再热蒸汽温度_1", "低压省煤器出水温度_1",
+    "热再热蒸汽温度_1", "低压省煤器出水温度_1",
     "低压主蒸汽温度_1", "冷凝水温度_1", "进口烟温_1", "排烟烟温_1",
     "高压缸排汽温度", "中压缸排汽温度", "低压缸进汽温度",
     "环境温度_1", "环境温度_2", "压气机出口温度_2", "燃料温度_2",
@@ -228,12 +229,21 @@ def canonical_name(name):
 
 def read_point_name_rows(xlsx_path=DEFAULT_MAPPING_PATH):
     rows = []
-    sheets = pd.read_excel(xlsx_path, sheet_name=None, header=None, usecols=[0, 1], dtype=str)
+    sheets = pd.read_excel(xlsx_path, sheet_name=None, header=None, dtype=str)
     for sheet in sheets.values():
-        for code, name in sheet.itertuples(index=False, name=None):
+        if sheet.empty:
+            continue
+        header = [canonical_name(value) for value in sheet.iloc[0].tolist()]
+        if "datacode/测点编码" in header and "name/测点名称" in header:
+            code_col = header.index("datacode/测点编码")
+            name_col = header.index("name/测点名称")
+            data = sheet.iloc[1:, [code_col, name_col]]
+        else:
+            data = sheet.iloc[:, [0, 1]]
+        for code, name in data.itertuples(index=False, name=None):
             code = "" if is_missing(code) else str(code).strip()
             name = "" if is_missing(name) else str(name).strip()
-            if code and name and code != "JQRD_编码":
+            if code and name and code not in {"JQRD_编码", "datacode/测点编码"}:
                 rows.append((code, canonical_name(name)))
     return rows
 
@@ -282,230 +292,135 @@ def apply_averaging(raw):
     return row, missing_groups
 
 
-def _clean_fuel_composition(composition):
-    cleaned = {}
-    for col in FUEL_COMPOSITION_COLUMNS:
-        value = to_float(composition.get(col))
-        if value is None or value < 0:
-            return None
-        cleaned[col] = value
-    if sum(cleaned.values()) <= 0:
-        return None
-    return cleaned
+def _default_cache_rows():
+    rows = []
+    for name in DEFAULT_CACHE_COLUMNS:
+        initial_value = DEFAULT_CACHE_INITIAL_VALUES.get(name)
+        rows.append(
+            {
+                "name": name,
+                "initial_value": initial_value,
+                "cached_value": initial_value,
+            }
+        )
+    return rows
 
 
-def read_fuel_composition_cache(cache_path=DEFAULT_FUEL_COMPOSITION_CACHE_PATH):
+def _normalize_cache_rows(payload):
+    rows = []
+    if isinstance(payload, list):
+        source_rows = payload
+    elif isinstance(payload, dict):
+        source_rows = payload.get("rows", payload.get("values", []))
+    else:
+        source_rows = []
+
+    for item in source_rows:
+        if not isinstance(item, dict):
+            continue
+        name = str(item.get("name", "")).strip()
+        if not name:
+            continue
+        initial_value = to_float(item.get("initial_value"))
+        cached_value = to_float(item.get("cached_value"))
+        rows.append(
+            {
+                "name": name,
+                "initial_value": initial_value,
+                "cached_value": cached_value,
+            }
+        )
+    return rows
+
+
+def read_cache_rows(cache_path=DEFAULT_CACHE_VALUE_PATH):
     cache_path = Path(cache_path)
     try:
         payload = json.loads(cache_path.read_text(encoding="utf-8"))
     except (FileNotFoundError, json.JSONDecodeError, OSError):
-        return DEFAULT_FUEL_COMPOSITION.copy(), "default"
+        return _default_cache_rows(), "default"
 
-    composition = _clean_fuel_composition(payload.get("composition", payload))
-    if composition is None:
-        return DEFAULT_FUEL_COMPOSITION.copy(), "default"
-    return composition, "file"
+    rows = _normalize_cache_rows(payload)
+    if not rows:
+        return _default_cache_rows(), "default"
+
+    by_name = {row["name"]: row for row in rows}
+    merged = []
+    for default_row in _default_cache_rows():
+        current = by_name.get(default_row["name"], {})
+        initial_value = current.get("initial_value", default_row["initial_value"])
+        cached_value = current.get("cached_value", default_row["cached_value"])
+        merged.append(
+            {
+                "name": default_row["name"],
+                "initial_value": initial_value,
+                "cached_value": cached_value,
+            }
+        )
+    return merged, "file"
 
 
-def write_fuel_composition_cache(composition, timestamp=None, cache_path=DEFAULT_FUEL_COMPOSITION_CACHE_PATH):
+def write_cache_rows(rows, cache_path=DEFAULT_CACHE_VALUE_PATH):
     cache_path = Path(cache_path)
     cache_path.parent.mkdir(parents=True, exist_ok=True)
-    payload = {
-        "timestamp": timestamp,
-        "composition": composition,
-    }
     temp_path = cache_path.with_name(f"{cache_path.name}.{os.getpid()}.tmp")
     temp_path.write_text(
-        json.dumps(payload, ensure_ascii=False, indent=2),
+        json.dumps(rows, ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
     os.replace(temp_path, cache_path)
 
 
-def apply_fuel_composition_cache(row, timestamp=None, cache_path=DEFAULT_FUEL_COMPOSITION_CACHE_PATH):
-    cache_path = Path(cache_path)
-    cached, source = read_fuel_composition_cache(cache_path)
-    updated = False
-
-    for col in FUEL_COMPOSITION_COLUMNS:
-        value = to_float(row.get(col))
-        if value is not None and value >= 0:
-            cached[col] = value
-            updated = True
-
-    cleaned = _clean_fuel_composition(cached)
-    if cleaned is None:
-        cleaned = DEFAULT_FUEL_COMPOSITION.copy()
-        source = "default"
-
-    if updated:
-        write_fuel_composition_cache(cleaned, timestamp=timestamp, cache_path=cache_path)
-        source = "updated"
-    elif source == "default":
-        write_fuel_composition_cache(cleaned, timestamp=timestamp, cache_path=cache_path)
-        source = "default_initialized"
-
-    for col in FUEL_COMPOSITION_COLUMNS:
-        row[col] = cleaned[col]
-
-    return {
-        "source": source,
-        "updated": updated,
-        "cache_path": str(Path(cache_path)),
-    }
+def _valid_cache_input(name, value):
+    if value is None:
+        return False
+    if name in FUEL_COMPOSITION_COLUMNS and value < 0:
+        return False
+    return True
 
 
-def _clean_environment_temperature(payload):
-    cleaned = {}
-    for col in DEFAULT_ENVIRONMENT_TEMPERATURE:
-        value = to_float(payload.get(col))
-        if value is None:
-            return None
-        cleaned[col] = value
-    return cleaned
-
-
-def read_environment_temperature_cache(cache_path=DEFAULT_ENVIRONMENT_TEMPERATURE_CACHE_PATH):
-    cache_path = Path(cache_path)
-    try:
-        payload = json.loads(cache_path.read_text(encoding="utf-8"))
-    except (FileNotFoundError, json.JSONDecodeError, OSError):
-        return DEFAULT_ENVIRONMENT_TEMPERATURE.copy(), "default"
-
-    temperatures = _clean_environment_temperature(payload.get("temperature", payload))
-    if temperatures is None:
-        return DEFAULT_ENVIRONMENT_TEMPERATURE.copy(), "default"
-    return temperatures, "file"
-
-
-def write_environment_temperature_cache(temperature, timestamp=None, cache_path=DEFAULT_ENVIRONMENT_TEMPERATURE_CACHE_PATH):
-    cache_path = Path(cache_path)
-    cache_path.parent.mkdir(parents=True, exist_ok=True)
-    payload = {
-        "timestamp": timestamp,
-        "temperature": temperature,
-    }
-    temp_path = cache_path.with_name(f"{cache_path.name}.{os.getpid()}.tmp")
-    temp_path.write_text(
-        json.dumps(payload, ensure_ascii=False, indent=2),
-        encoding="utf-8",
-    )
-    os.replace(temp_path, cache_path)
-
-
-def apply_environment_temperature_cache(row, timestamp=None, cache_path=DEFAULT_ENVIRONMENT_TEMPERATURE_CACHE_PATH):
-    cache_path = Path(cache_path)
-    cached, source = read_environment_temperature_cache(cache_path)
-    updated = False
-
-    for col in DEFAULT_ENVIRONMENT_TEMPERATURE:
-        value = to_float(row.get(col))
-        if value is not None:
-            cached[col] = value
-            updated = True
-
-    cleaned = _clean_environment_temperature(cached)
-    if cleaned is None:
-        cleaned = DEFAULT_ENVIRONMENT_TEMPERATURE.copy()
-        source = "default"
-
-    if updated:
-        write_environment_temperature_cache(cleaned, timestamp=timestamp, cache_path=cache_path)
-        source = "updated"
-    elif source == "default":
-        write_environment_temperature_cache(cleaned, timestamp=timestamp, cache_path=cache_path)
-        source = "default_initialized"
-
-    for col, value in cleaned.items():
-        row[col] = value
-
-    return {
-        "source": source,
-        "updated": updated,
-        "cache_path": str(Path(cache_path)),
-    }
-
-
-def read_runtime_cache_columns(config_path=DEFAULT_RUNTIME_CACHE_CONFIG_PATH):
-    config_path = Path(config_path)
-    try:
-        payload = json.loads(config_path.read_text(encoding="utf-8"))
-    except (FileNotFoundError, json.JSONDecodeError, OSError):
-        return list(DEFAULT_RUNTIME_CACHE_COLUMNS), "default"
-
-    if payload.get("enabled", True) is False:
-        return [], "disabled"
-
-    columns = payload.get("columns", DEFAULT_RUNTIME_CACHE_COLUMNS)
-    if not isinstance(columns, list):
-        return list(DEFAULT_RUNTIME_CACHE_COLUMNS), "default"
-    columns = [str(col).strip() for col in columns if str(col).strip()]
-    return columns, "file"
-
-
-def read_runtime_value_cache(columns, cache_path=DEFAULT_RUNTIME_VALUE_CACHE_PATH):
-    cache_path = Path(cache_path)
-    try:
-        payload = json.loads(cache_path.read_text(encoding="utf-8"))
-    except (FileNotFoundError, json.JSONDecodeError, OSError):
-        return {}, "empty"
-
-    values = payload.get("values", payload)
-    cleaned = {}
-    for col in columns:
-        value = to_float(values.get(col))
-        if value is not None:
-            cleaned[col] = value
-    return cleaned, "file" if cleaned else "empty"
-
-
-def write_runtime_value_cache(values, timestamp=None, cache_path=DEFAULT_RUNTIME_VALUE_CACHE_PATH):
-    cache_path = Path(cache_path)
-    cache_path.parent.mkdir(parents=True, exist_ok=True)
-    payload = {
-        "timestamp": timestamp,
-        "values": values,
-    }
-    temp_path = cache_path.with_name(f"{cache_path.name}.{os.getpid()}.tmp")
-    temp_path.write_text(
-        json.dumps(payload, ensure_ascii=False, indent=2),
-        encoding="utf-8",
-    )
-    os.replace(temp_path, cache_path)
-
-
-def apply_runtime_value_cache(
-    row,
-    timestamp=None,
-    cache_path=DEFAULT_RUNTIME_VALUE_CACHE_PATH,
-    config_path=DEFAULT_RUNTIME_CACHE_CONFIG_PATH,
-):
-    columns, config_source = read_runtime_cache_columns(config_path)
-    cached, source = read_runtime_value_cache(columns, cache_path)
+def apply_cache_values(row, cache_path=DEFAULT_CACHE_VALUE_PATH):
+    rows, source = read_cache_rows(cache_path)
     updated_fields = []
     filled_fields = []
+    initialized_fields = []
 
-    for col in columns:
-        value = to_float(row.get(col))
-        if value is not None:
-            cached[col] = value
-            updated_fields.append(col)
-        elif col in cached:
-            row[col] = cached[col]
-            filled_fields.append(col)
+    for item in rows:
+        name = item["name"]
+        value = to_float(row.get(name))
+        if _valid_cache_input(name, value):
+            item["cached_value"] = value
+            updated_fields.append(name)
+            continue
 
-    if updated_fields:
-        write_runtime_value_cache(cached, timestamp=timestamp, cache_path=cache_path)
-        source = "updated"
+        cached_value = to_float(item.get("cached_value"))
+        if cached_value is not None:
+            row[name] = cached_value
+            filled_fields.append(name)
+            continue
+
+        initial_value = to_float(item.get("initial_value"))
+        if initial_value is not None:
+            item["cached_value"] = initial_value
+            row[name] = initial_value
+            initialized_fields.append(name)
+
+    if updated_fields or initialized_fields or source == "default":
+        write_cache_rows(rows, cache_path=cache_path)
+        if updated_fields:
+            source = "updated"
+        elif initialized_fields:
+            source = "initialized"
+        else:
+            source = "default_initialized"
 
     return {
         "source": source,
-        "config_source": config_source,
-        "columns": columns,
+        "columns": [item["name"] for item in rows],
         "updated_fields": updated_fields,
         "filled_fields": filled_fields,
+        "initialized_fields": initialized_fields,
         "cache_path": str(Path(cache_path)),
-        "config_path": str(Path(config_path)),
     }
 
 
@@ -560,9 +475,7 @@ def build_online_dataframe(payload, xlsx_path=DEFAULT_MAPPING_PATH, frame_index=
     point_rows = read_point_name_rows(xlsx_path)
     raw, code_to_name, missing_point_codes = build_raw_named_values(point_values, point_rows)
     row, missing_groups = apply_averaging(raw)
-    fuel_cache = apply_fuel_composition_cache(row, timestamp=timestamp)
-    environment_temperature_cache = apply_environment_temperature_cache(row, timestamp=timestamp)
-    runtime_value_cache = apply_runtime_value_cache(row, timestamp=timestamp)
+    cache_values = apply_cache_values(row)
     missing_groups = {name: names for name, names in missing_groups.items() if is_missing(row.get(name))}
     apply_unit_conversions(row)
     add_derived_values(row)
@@ -574,9 +487,7 @@ def build_online_dataframe(payload, xlsx_path=DEFAULT_MAPPING_PATH, frame_index=
         "missing_internal_fields": sorted(name for name, value in row.items() if value is None),
         "missing_averaging_groups": missing_groups,
         "code_to_name": code_to_name,
-        "fuel_composition_cache": fuel_cache,
-        "environment_temperature_cache": environment_temperature_cache,
-        "runtime_value_cache": runtime_value_cache,
+        "cache_values": cache_values,
     }
     return df, timestamp, diagnostics
 
